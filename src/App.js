@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Photos from './pages/Photos';
