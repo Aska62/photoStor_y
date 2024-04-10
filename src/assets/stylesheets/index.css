@@ -1,5 +1,14 @@
 @import url('./normalize.css');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-body {
-  background-color: blanchedalmond;
+:root {
+  font-family: "Montserrat", sans-serif;
+  font-style: normal;
+  --root-color-white: #FAF8F8;
+  --root-color-black: #232323;
+  --root-color-blue: #69C2C2;
 }
+
+@import url('./components/header.css');
+@import url('./pages/home.css');
+@import url('./pages/photos.css');

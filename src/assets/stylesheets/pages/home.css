@@ -1,0 +1,40 @@
+.main_home {
+  width: 100vw;
+  height: calc(100vh - 3rem);
+  background-color: var(--root-color-blue);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.main-image {
+  width: 100vw;
+  height: 45%;
+  background-image: url('../../images/everest.jpg');
+  background-position: center;
+  background-size: cover;
+  z-index: 1;
+}
+.main-image-cover {
+  width: 100%;
+  height: 100%;
+  background-color: var(--root-color-white);
+  opacity: 40%;
+  z-index: 2;
+}
+.main-title {
+  margin: 0;
+  font-size: 7rem;
+  font-weight: 300;
+  font-style: italic;
+  width: fit-content;
+  height: 7rem;
+}
+.main-title_top {
+  margin: auto auto 2rem 3rem;
+}
+.main-title_bottom {
+  margin: 2rem 3rem auto auto;
+  color: var(--root-color-white);
+}
