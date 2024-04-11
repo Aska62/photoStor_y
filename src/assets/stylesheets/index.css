@@ -21,4 +21,5 @@ ul {
 @import url('./components/header.css');
 @import url('./pages/home.css');
 @import url('./pages/photos.css');
+@import url('./pages/photo.css');
 @import url('./pages/categories.css');

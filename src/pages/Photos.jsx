@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { ref, listAll, getDownloadURL } from "firebase/storage";
@@ -9,15 +9,15 @@ import Header from "../components/Header";
 
 const Photos = ({ headerWhite }) => {
   const auth = getAuth();
+  const photosFetched = useRef(false);
 
   const [photoList, setPhotoList] = useState([]);
 
   // Ref to the destinate directory
 	const imageListRef = ref(storage, `photos/${auth.currentUser.uid}/resized`);
-  let loaded = false;
 
 	useEffect(() => {
-    if (!loaded) {
+    if (photosFetched.current === false) {
       listAll(imageListRef).then((res) => {
         res.items.forEach((item) => {
           getDownloadURL(item).then((url) => {
@@ -25,7 +25,7 @@ const Photos = ({ headerWhite }) => {
           })
         });
       });
-      loaded = true;
+      photosFetched.current = true;
     }
 	}, []);
 
@@ -42,8 +42,8 @@ const Photos = ({ headerWhite }) => {
       <Header white={headerWhite} />
       <main className="main main_photos">
         <Link to={`${PHOTOS_PAGE_URL}/add`}>Add New Photo</Link>
-        {photoList.map((url) => {
-          return <img src={url} />
+        {photoList.map((url, index) => {
+          return <img key={index} src={url} />
         })}
       </main>
     </>
