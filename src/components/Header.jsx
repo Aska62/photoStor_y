@@ -17,7 +17,7 @@ const Header = ({ white }) => {
   }
 
   return (
-    <header className={white && 'header_white'}>
+    <header className={white ? 'header_white' : ''}>
       <div className="header-app-title">PhotoStory</div>
       <div className="hamburger-container" onClick={()=>setHamburgerOpen(!hamburgerOpen)}>
         <div className={`hamburger-line hamburger-line_top ${hamburgerOpen ? 'hamburger-line_top_open' : ''}`}></div>
@@ -27,15 +27,15 @@ const Header = ({ white }) => {
       <nav className="navbar">
         <Link
           to={HOME_PAGE_URL}
-          className={`nav-item ${location.pathname === HOME_PAGE_URL && 'nav-item_current'}`}
+          className={`nav-item ${location.pathname === HOME_PAGE_URL ? 'nav-item_current' : ''}`}
         >Home</Link>
         <Link
           to={PHOTOS_PAGE_URL}
-          className={`nav-item ${location.pathname === PHOTOS_PAGE_URL && 'nav-item_current'}`}
+          className={`nav-item ${location.pathname === PHOTOS_PAGE_URL ? 'nav-item_current' : ''}`}
         >Photos</Link>
         <Link
           to={CATEGORIES_PAGE_URL}
-          className={`nav-item ${location.pathname === CATEGORIES_PAGE_URL && 'nav-item_current'}`}
+          className={`nav-item ${location.pathname === CATEGORIES_PAGE_URL ? 'nav-item_current' : ''}`}
         >Categories</Link>
         <IoLogOutOutline className="nav-item nav-item_logout" onClick={onLogout} />
       </nav>

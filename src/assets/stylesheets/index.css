@@ -8,7 +8,17 @@
   --root-color-black: #232323;
   --root-color-blue: #69C2C2;
 }
+li {
+  list-style-type: none;
+}
+ul {
+  padding: 0;
+}
+.btn_hidden {
+  display: none;
+}
 
 @import url('./components/header.css');
 @import url('./pages/home.css');
 @import url('./pages/photos.css');
+@import url('./pages/categories.css');
