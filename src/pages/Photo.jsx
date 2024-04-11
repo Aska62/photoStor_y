@@ -6,6 +6,7 @@ import { ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { toast } from 'react-toastify';
 import Header from "../components/Header";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Photo = ({ headerWhite }) => {
   const auth = getAuth();
@@ -13,18 +14,21 @@ const Photo = ({ headerWhite }) => {
 
   const [photoToUpload, setPhotoToUpload] = useState(null);
 
-  const uploadPhoto = async (e) => {
+  const uploadPhoto = (e) => {
     e.preventDefault();
-
+    toast.error('test');
 		if (photoToUpload == null) return;
 
 		// Create File reference
-		const imageRef = ref(storage, `photos/${auth.currentUser.uid}/original/${photoToUpload.name+v4()}`);
+		const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${v4()}`);
 		// Upload to firebase storage
     try {
-      const res = await uploadBytes(imageRef, photoToUpload);
-      navigate('/photos');
-      toast.success('Successfully uploaded');
+      uploadBytes(imageRef, photoToUpload)
+        .then(() => {
+          navigate('/photos');
+          // TODO: Adjust notification
+          toast.success('Successfully uploaded');
+        })
     } catch (err) {
       toast.error('Failed to upload');
       console.log(err);

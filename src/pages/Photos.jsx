@@ -13,7 +13,7 @@ const Photos = ({ headerWhite }) => {
   const [photoList, setPhotoList] = useState([]);
 
   // Ref to the destinate directory
-	const imageListRef = ref(storage, `photos/${auth.currentUser.uid}/original`);
+	const imageListRef = ref(storage, `photos/${auth.currentUser.uid}/resized`);
   let loaded = false;
 
 	useEffect(() => {
