@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, doc, getDocs, query, where, addDoc, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, where, addDoc, writeBatch, deleteDoc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase.config';
 import { MdOutlineCancel } from "react-icons/md";
@@ -57,7 +57,8 @@ const Categories = ({ headerWhite }) => {
     try {
       const docRef = await addDoc(collection(db, 'categories'), {
         name: categ,
-        userRef: auth.currentUser.uid
+        userRef: auth.currentUser.uid,
+        createdAt: Timestamp.now(),
       });
 
       if (docRef) {
@@ -94,7 +95,8 @@ const Categories = ({ headerWhite }) => {
       Object.values(categToUpdate).forEach(category => {
         const docRef = doc(db, 'categories', category.id);
         batch.update(docRef, {
-          name: category.editedName
+          name: category.editedName,
+          updatedAt: Timestamp.now(),
         })
       });
 

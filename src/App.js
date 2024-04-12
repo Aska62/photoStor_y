@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Photos from './pages/Photos';
 import Photo from './pages/Photo';
+import AddPhoto from './pages/AddPhoto';
 import Categories from './pages/Categories';
 
 function App() {
@@ -17,8 +18,8 @@ function App() {
         </Route>
         <Route path='/photos' element={<PrivateRoute />} >
           <Route path='/photos' element={<Photos headerWhite={true} />} />
-          <Route path='/photos/new' element={<Photo headerWhite={true} />} />
-          <Route path='/photos/:id' element={<Photo headerWhite={true} />} />
+          <Route path='/photos/view/:id' element={<Photo headerWhite={true} />} />
+          <Route path='/photos/add' element={<AddPhoto headerWhite={true} />} />
         </Route>
         <Route path='/categories' element={<PrivateRoute />} >
           <Route path='/categories' element={<Categories headerWhite={false} />} />

@@ -14,12 +14,26 @@ li {
 ul {
   padding: 0;
 }
+.btn {
+  width: 6rem;
+  height: 1.7rem;
+  border: none;
+  background-color: var(--root-color-blue);
+  color: var(--root-color-white);
+  border-radius: 3px;
+  box-shadow: 1px 2px 5px rgba(35, 35, 35, .4);
+  font-size: 0.8rem;
+}
 .btn_hidden {
   display: none;
+}
+.btn_cancel {
+  background-color: #bfaa1f
 }
 
 @import url('./components/header.css');
 @import url('./pages/home.css');
 @import url('./pages/photos.css');
+@import url('./pages/addPhoto.css');
 @import url('./pages/photo.css');
 @import url('./pages/categories.css');
