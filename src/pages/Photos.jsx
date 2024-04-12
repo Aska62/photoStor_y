@@ -8,7 +8,6 @@ import { db, storage } from "../firebase.config.js";
 import { PHOTOS_PAGE_URL } from '../constants.js';
 import Header from "../components/Header";
 import { RESIZED_PHOTO_SIZE } from '../constants.js';
-import generatePhotoURL from '../utils/generatePhotoURL.js';
 
 const Photos = ({ headerWhite }) => {
   const auth = getAuth();
