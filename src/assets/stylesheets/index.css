@@ -24,11 +24,26 @@ ul {
   box-shadow: 1px 2px 5px rgba(35, 35, 35, .4);
   font-size: 0.8rem;
 }
+.btn:hover {
+  cursor: pointer;
+}
 .btn_hidden {
   display: none;
 }
 .btn_cancel {
   background-color: #bfaa1f
+}
+.btn_gray {
+  background-color: rgba(35, 35, 35, .4);
+}
+.btn_large {
+  height: 2rem;
+}
+.btn_disabled {
+  opacity: .3;
+}
+.btn_disabled:hover {
+  cursor:default;
 }
 
 @import url('./components/header.css');

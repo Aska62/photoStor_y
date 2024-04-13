@@ -25,7 +25,6 @@ const AddPhoto = ({ headerWhite }) => {
     location: '',
     categoryRef: '',
     note: '',
-    hide: false,
     photoRef: ''
   });
   const {
@@ -34,7 +33,6 @@ const AddPhoto = ({ headerWhite }) => {
     location,
     categoryRef,
     note,
-    hide
   } = formData;
 
   useEffect(()=> {
@@ -186,6 +184,13 @@ const AddPhoto = ({ headerWhite }) => {
       })
   }
 
+  const onCancelClick = (e) => {
+    e.preventDefault();
+    if (window.confirm('The data will not be saved. Are you sure to cancel editing?')) {
+      navigate('/photos');
+    }
+  }
+
   return (
     <>
       <Header white={headerWhite} />
@@ -193,7 +198,7 @@ const AddPhoto = ({ headerWhite }) => {
         {loading ? <p>Loading...</p> : <>
           <form className="photo-form-container">
             <div className="photo-form_main">
-              <div className="photo-form_image-container photo-form_image-container_edit">
+              <div className="photo-form_image-container">
                 <img
                   className="photo-for-view"
                   src={imagePreviewData}
@@ -280,7 +285,7 @@ const AddPhoto = ({ headerWhite }) => {
                 </li>
                 <li className="photo-btn-box photo-btn-box_two">
                   <button className='btn' onClick={(e) => onSubmit(e)}>Save</button>
-                  <button className='btn' >Cancel</button>
+                  <button className='btn btn_cancel' onClick={(e) => onCancelClick(e)}>Cancel</button>
                 </li>
               </ul>
             </div>

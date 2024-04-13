@@ -21,6 +21,25 @@
   margin: 0 auto;
   box-shadow: 4px 4px 5px rgba(35, 35, 35, .4);
 }
+.photo-view {
+  display: block;
+}
+.image-edit-box {
+  width: 86%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.photo-input_image {
+  display: block;
+}
+.photo-input_image_hidden {
+  display: none;
+}
+.btn_photo-edit-cancel {
+  align-self: flex-end;
+}
+
 .photo-form_info-container {
   width: 320px;
   margin: 2rem auto;
@@ -60,16 +79,32 @@
 }
 .photo-info_textarea {
   width: 100%;
-  height: 100%;
+  height: 120px;
 }
 .photo-info_select {
   width: 70%;
 }
-
-
 .photo-btn-box {
   width: 320px;
   display: flex;
   justify-content: space-between;
   margin: 2rem auto;
+}
+.photo-info-box {
+  position: relative;
+}
+.photo-info_note {
+  height: fit-content;
+}
+.photo-hidden {
+  width: fit-content;
+  height: 0.8rem;
+  padding: 3px;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  background-color: #e38a6f;
+  color: var(--root-color-white);
+  position: absolute;
+  top: 1.2rem;
+  right: 0;
 }

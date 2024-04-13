@@ -33,7 +33,6 @@ const Photos = ({ headerWhite }) => {
       photosFetched.current = true;
       setLoading(false);
     }
-    console.log(photoInfoList)
 	}, []);
 
   const fetchPhotoInfo = async () => {
@@ -58,7 +57,7 @@ const Photos = ({ headerWhite }) => {
         const imagePath = `photos/${auth.currentUser.uid}/resized`;
         // // Get photo URL
         const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${RESIZED_PHOTO_SIZE}`);
-        // TODO:
+
         getDownloadURL(photoRef).then((url) => {
           fetchedPhotoInfo = [...fetchedPhotoInfo, {
             id: doc.id,
@@ -66,7 +65,6 @@ const Photos = ({ headerWhite }) => {
             photoURL: url,
           }]
           setPhotoInfoList(fetchedPhotoInfo);
-          console.log(fetchedPhotoInfo)
         })
       })
     } catch (err) {
