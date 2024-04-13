@@ -17,6 +17,7 @@ const AddPhoto = ({ headerWhite }) => {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [photoToUpload, setPhotoToUpload] = useState(null);
+  const [imagePreviewData, setImagePreviewData] = useState(null);
   const [hidePhoto, setHidePhoto] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -69,6 +70,25 @@ const AddPhoto = ({ headerWhite }) => {
       categFetched.current = true;
     }
   }, []);
+
+  const onFileSelect = (e) => {
+    const files = e.target.files
+    if (files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+
+      // Set data for preview
+      reader.onload = (e) => {
+        setImagePreviewData(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Set data to save to DB
+      setPhotoToUpload(file);
+    } else {
+      toast.error('Failed to read the file');
+    }
+  }
 
   const onInputChange = (e) => {
     if (['title', 'location', 'note'].includes(e.target.id)) {
@@ -169,93 +189,100 @@ const AddPhoto = ({ headerWhite }) => {
   return (
     <>
       <Header white={headerWhite} />
-      <main className="main main_add-photo">
+      <main className="main main_photo">
         {loading ? <p>Loading...</p> : <>
-          <form className="photo-info-form">
-            <div className="photo-info-container photo-info-container_1">
-              <input
-                type='file'
-                accept="image/png, image/jpeg"
-                id='photo'
-                name='photo'
-                className="photo-input photo-input_image"
-                onChange={(e) => setPhotoToUpload(e.target.files[0])}
-              />
-            </div>
-            <ul className="photo-info-container photo-info-container_1">
-              <li className="photo-info-box">
-                <label className="photo-input-label" >Title</label>
+          <form className="photo-form-container">
+            <div className="photo-form_main">
+              <div className="photo-form_image-container photo-form_image-container_edit">
+                <img
+                  className="photo-for-view"
+                  src={imagePreviewData}
+                />
                 <input
-                  type='text'
-                  id='title'
-                  name='title'
-                  className="photo-input"
-                  onChange={(e) => onInputChange(e)}
-                >
-                </input>
-              </li>
-              <li className="photo-info-box">
-                <label className="photo-input-label" >Date</label>
-                <input
-                  type='date'
-                  id='date'
-                  name='date'
-                  className="photo-input"
-                  onChange={(e) => onInputChange(e)}
-                >
-                </input>
-              </li>
-              <li className="photo-info-box">
-                <label className="photo-input-label" >Location</label>
-                <input
-                  type='text'
-                  id='location'
-                  name='location'
-                  className="photo-input"
-                  onChange={(e) => onInputChange(e)}
-                >
-                </input>
-              </li>
-              <li className="photo-info-box">
-                <label className="photo-input-label" >Category</label>
-                <select
-                  id='categoryRef'
-                  name='categoryRef'
-                  className="photo-input photo-input_select"
-                  onChange={(e) => onInputChange(e)}
-                >
-                  <option value="">Please select</option>
-                  {categories.map((category, index) => (
-                    <option value={category.id} key={index}>{category.name}</option>
-                  ))}
-                </select>
-              </li>
-              <li className="photo-info-box">
-                <label className="photo-input-label" >Note</label>
-                <textarea
-                  id='note'
-                  name='note'
-                  className="photo-input photo-input_text"
-                  onChange={(e) => onInputChange(e)}
-                >
-                </textarea>
-              </li>
-              <li className="photo-info-box">
-                <input
-                  type='checkbox'
-                  id='hide'
-                  name='hide'
-                  value={true}
-                  className="photo-input photo-input_check"
-                  onChange={(e) => onInputChange(e)}
-                >
-                </input>
-                <label className="photo-input-label" >Hide photo</label>
-              </li>
-            </ul>
-            <div className="photo-bnt-container">
-              <button className='btn' onClick={(e) => onSubmit(e)}>Save</button>
-              <button className='btn' >Cancel</button>
+                  type='file'
+                  accept="image/png, image/jpeg"
+                  id='photo'
+                  name='photo'
+                  className="photo-input photo-input_image"
+                  // onChange={(e) => setPhotoToUpload(e.target.files[0])}
+                  onChange={(e) => onFileSelect(e)}
+                />
+              </div>
+              <ul className="photo-form_info-container">
+                <li className="photo-info_input-box">
+                  <label className="photo-input-label" >Title</label>
+                  <input
+                    type='text'
+                    id='title'
+                    name='title'
+                    className="photo-input"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                  </input>
+                </li>
+                <li className="photo-info_input-box">
+                  <label className="photo-input-label" >Date</label>
+                  <input
+                    type='date'
+                    id='date'
+                    name='date'
+                    className="photo-input"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                  </input>
+                </li>
+                <li className="photo-info_input-box">
+                  <label className="photo-input-label" >Location</label>
+                  <input
+                    type='text'
+                    id='location'
+                    name='location'
+                    className="photo-input"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                  </input>
+                </li>
+                <li className="photo-info_input-box">
+                  <label className="photo-input-label" >Category</label>
+                  <select
+                    id='categoryRef'
+                    name='categoryRef'
+                    className="photo-input photo-input_select"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                    <option value="">Please select</option>
+                    {categories.map((category, index) => (
+                      <option value={category.id} key={index}>{category.name}</option>
+                    ))}
+                  </select>
+                </li>
+                <li className="photo-info_input-box_textarea">
+                  <label className="photo-input-label" >Note</label>
+                  <textarea
+                    id='note'
+                    name='note'
+                    className="photo-info_textarea"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                  </textarea>
+                </li>
+                <li className="photo-info_input-box_checkbox">
+                  <input
+                    type='checkbox'
+                    id='hide'
+                    name='hide'
+                    value={true}
+                    className="photo-input photo-input_check"
+                    onChange={(e) => onInputChange(e)}
+                  >
+                  </input>
+                  <label className="photo-input-label" >Hide photo</label>
+                </li>
+                <li className="photo-btn-box photo-btn-box_two">
+                  <button className='btn' onClick={(e) => onSubmit(e)}>Save</button>
+                  <button className='btn' >Cancel</button>
+                </li>
+              </ul>
             </div>
           </form>
         </>}

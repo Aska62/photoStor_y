@@ -312,7 +312,7 @@ const Photo = ({ headerWhite }) => {
                         onChange={(e) => onInputChange(e)}
                         checked={hide ? true : false}
                       />
-                      <label className="photo--label" > Hide photo</label>
+                      <label className="photo-input-label" > Hide photo</label>
                     </div>
                   </div>
                   <div className="photo-btn-box">
