@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { db, storage } from "../firebase.config";
 import { getAuth } from 'firebase/auth';
-import { collection, getDocs, addDoc, query, where, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "../components/Header";
+import CategoryOption from "../components/CategoryOption";
 
 const AddPhoto = ({ headerWhite }) => {
   const auth = getAuth();
@@ -15,7 +16,6 @@ const AddPhoto = ({ headerWhite }) => {
   const categFetched = useRef(false);
 
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
   const [hidePhoto, setHidePhoto] = useState(false);
@@ -34,40 +34,6 @@ const AddPhoto = ({ headerWhite }) => {
     categoryRef,
     note,
   } = formData;
-
-  useEffect(()=> {
-    // Fetch categories on page load
-    if (categFetched.current === false) {
-      const fetchCategories = async () => {
-        const categRef = collection(db, 'categories');
-
-        try {
-          let q = query(
-            categRef,
-            where('userRef', '==', auth.currentUser.uid)
-          )
-
-          const querySnap = await getDocs(q);
-
-          let fetchedCateg = [];
-          querySnap.forEach((doc) => {
-            fetchedCateg.push({
-              id: doc.id,
-              name: doc.data().name,
-            });
-          });
-
-          setCategories(fetchedCateg);
-          setLoading(false);
-        } catch(err) {
-          console.log(err);
-        }
-      }
-
-      fetchCategories();
-      categFetched.current = true;
-    }
-  }, []);
 
   const onFileSelect = (e) => {
     const files = e.target.files
@@ -209,7 +175,6 @@ const AddPhoto = ({ headerWhite }) => {
                   id='photo'
                   name='photo'
                   className="photo-input photo-input_image"
-                  // onChange={(e) => setPhotoToUpload(e.target.files[0])}
                   onChange={(e) => onFileSelect(e)}
                 />
               </div>
@@ -255,10 +220,7 @@ const AddPhoto = ({ headerWhite }) => {
                     className="photo-input photo-input_select"
                     onChange={(e) => onInputChange(e)}
                   >
-                    <option value="">Please select</option>
-                    {categories.map((category, index) => (
-                      <option value={category.id} key={index}>{category.name}</option>
-                    ))}
+                    <CategoryOption categFetched={categFetched} defMessage='Please select' />
                   </select>
                 </li>
                 <li className="photo-info_input-box_textarea">

@@ -2,27 +2,27 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, storage } from "../firebase.config";
 import { getAuth } from 'firebase/auth';
-import { doc, collection, getDoc, getDocs, query, where, Timestamp, updateDoc, } from 'firebase/firestore';
-import { ref, getStorage, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
+import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 } from "uuid";
 import moment from "moment";
 import Header from "../components/Header";
+import CategoryOption from "../components/CategoryOption";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import { RESIZED_PHOTO_SIZE } from '../constants.js';
 
 const Photo = ({ headerWhite }) => {
   const auth = getAuth();
-  const storage = getStorage();
   const navigate = useNavigate();
   const params = useParams();
   const infoFetched = useRef(false);
+  const categFetched = useRef(false);
 
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [photoInfo, setPhotoInfo] = useState(null);
   const [categoryName, setCategoryName] = useState('');
   const [originalPhotoURL, setOriginalPhotoURL] = useState('');
@@ -52,35 +52,7 @@ const Photo = ({ headerWhite }) => {
   useEffect(()=> {
     if (infoFetched.current === false) {
       setLoading(true);
-
-      const fetchCategories = async () => {
-        const categRef = collection(db, 'categories');
-
-        try {
-          let q = query(
-            categRef,
-            where('userRef', '==', auth.currentUser.uid)
-          )
-
-          const querySnap = await getDocs(q);
-
-          let fetchedCateg = [];
-          querySnap.forEach((doc) => {
-            fetchedCateg.push({
-              id: doc.id,
-              name: doc.data().name,
-            });
-          });
-
-          setCategories(fetchedCateg);
-          setLoading(false);
-        } catch(err) {
-          console.log(err);
-        }
-      }
-
       fetchPhoto();
-      fetchCategories();
       infoFetched.current = true;
     }
   }, []);
@@ -324,7 +296,7 @@ const Photo = ({ headerWhite }) => {
                     <p className="photo-info"><MdOutlineDateRange/> {moment.unix(photoInfo.date.seconds).format("YYYY-MM-DD")}</p>
                     <p className="photo-info">Category: {categoryName}</p>
                     <p className="photo-info photo-info_note">{photoInfo.note}</p>
-                    {photoInfo.hide ? <div className="photo-info photo-hidden">Hidden</div> : <></>}
+                    {photoInfo.hide ? <div className="photo-info photo-hidden-icon">Hidden</div> : <></>}
                   </div>
                   <div className={`${editing ? '' : 'photo-info_hidden'}`}>
                     <div className="photo-info_input-box">
@@ -369,15 +341,7 @@ const Photo = ({ headerWhite }) => {
                         onChange={(e) => onInputChange(e)}
                         defaultValue={categoryRef}
                       >
-                        <option value="">Please select</option>
-                        {categories.map((category, index) => (
-                          <option
-                            value={category.id}
-                            key={index}
-                          >
-                            {category.name}
-                          </option>
-                        ))}
+                        <CategoryOption categFetched={categFetched} defMessage='Please select' />
                       </select>
                     </div>
                     <div className="photo-info_input-box_textarea">

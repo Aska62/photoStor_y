@@ -14,6 +14,12 @@ li {
 ul {
   padding: 0;
 }
+select:focus {
+  outline: none;
+}
+.main {
+  z-index: 0;
+}
 .btn {
   width: 6rem;
   height: 1.7rem;
@@ -45,10 +51,21 @@ ul {
 .btn_disabled:hover {
   cursor:default;
 }
+.link-btn {
+  width: fit-content;
+  height: 1.6rem;
+  padding: 3px 5px;
+  line-height: 1.6rem;
+  vertical-align: middle;
+}
+
+.link {
+  text-decoration: none;
+}
 
 @import url('./components/header.css');
 @import url('./pages/home.css');
-@import url('./pages/photos.css');
 @import url('./pages/photo.css');
 @import url('./pages/addPhoto.css');
+@import url('./pages/photos.css');
 @import url('./pages/categories.css');

@@ -1,5 +1,60 @@
 .main_photos {
   background-color: var(--root-color-white);
   width: 100vw;
-  height: 100vh;
+  height: fit-content;
+  min-height: calc(100vh - 3rem);
+}
+.photo-list_heading-box {
+  width: 100%;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.list-category-selector {
+  width: fit-content;
+  font-size: 0.9rem;
+  margin-left: 3rem;
+}
+.photo-list-card {
+  width: 90%;
+  max-width: 600px;
+  height: fit-content;
+  margin: 4rem auto;
+  display: flex;
+  justify-content: space-between;
+}
+.photo-list-card:first-of-type {
+  margin-top: 8rem;
+}
+.photo-list-card:nth-last-of-type(1) {
+  margin-bottom: 0;
+  padding-bottom: 3rem;
+}
+.photo-list_img {
+  box-shadow: 4px 4px 5px rgba(35, 35, 35, .4);
+  transition-duration: .3s;
+}
+.photo-list_img:hover {
+  opacity: .8;
+  transition-duration: .3s;
+}
+.photo-list_info {
+  width: calc(50% - 1rem);
+  padding-left: 1rem;
+}
+.photo-list_title {
+  color: var(--root-color-black);
+  font-weight: 400;
+  margin-bottom: 0;
+}
+.photo-hidden-icon_list {
+  position: unset;
+  top: unset;
+  right: unset;
+  background-color: var(--root-color-blue);
+}
+.link-btn_add {
+  margin-right: 3rem;
 }
