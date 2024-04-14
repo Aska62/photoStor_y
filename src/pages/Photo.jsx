@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, storage } from "../firebase.config";
 import { getAuth } from 'firebase/auth';
-import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -258,6 +258,39 @@ const Photo = ({ headerWhite }) => {
     }
   }
 
+  const onDelete = async (e) => {
+    e.preventDefault();
+
+    if (window.confirm("You have 'hidden' option. Are you sure you want to delete?")) {
+      try {
+        // Delete the record
+        deleteDoc(doc(db, 'photos', params.id))
+          .then(()=> {
+            // Get photo path
+            const originalImagePath = `photos/${auth.currentUser.uid}/${photoRef}`;
+            const resizedImagePath = `photos/${auth.currentUser.uid}/resized/${photoRef}_${RESIZED_PHOTO_SIZE}`;
+            // Get reference
+            const originalRef = ref(storage, originalImagePath);
+            const resizedRef = ref(storage, resizedImagePath);
+
+            // Delete files
+            try {
+              deleteObject(originalRef);
+              deleteObject(resizedRef);
+              navigate('/photos');
+              toast.success('Deleted the photo data');
+            } catch (err) {
+              toast.error('Error deleting photo')
+              console.log(err)
+            }
+          })
+      } catch (err) {
+        toast.error('Failed to delete the record');
+        console.log(err)
+      }
+    }
+  }
+
   return (
     <>
       <Header white={headerWhite} />
@@ -399,6 +432,7 @@ const Photo = ({ headerWhite }) => {
                     <button
                       type='button'
                       className='btn btn_cancel'
+                      onClick={(e) => onDelete(e)}
                     >
                       Delete
                     </button>

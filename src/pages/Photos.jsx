@@ -134,14 +134,17 @@ const Photos = ({ headerWhite }) => {
                     className="photo-list_img"
                   />
                 </Link>
-                <Link
-                  to={`/photos/view/${info.id}`}
-                  key={index}
-                  className="link photo-list_info"
-                >
-                  <h3 className="photo-list_title">{info.data.title}</h3>
-                  <div className="photo-hidden-icon photo-hidden-icon_list">Hidden</div>
-                </Link>
+                <div className="link photo-list_info">
+                  <Link
+                    to={`/photos/view/${info.id}`}
+                    key={index}
+                    className="link"
+                  >
+                    <h3 className="photo-list_title">{info.data.title}</h3>
+                  </Link>
+                  <p>{moment.unix(info.data.date.seconds).format("YYYY-MM-DD")}</p>
+                  {info.data.hide ? <div className="photo-hidden-icon photo-hidden-icon_list">Hidden</div> : <></>}
+                </div>
               </div>
             ))}
             </>
