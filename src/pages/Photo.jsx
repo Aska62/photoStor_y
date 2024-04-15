@@ -58,42 +58,47 @@ const Photo = ({ headerWhite }) => {
   }, []);
 
   const fetchPhoto = async () => {
-    try {
-      const photoRef = doc(db, 'photos', params.id);
+    const photoRef = doc(db, 'photos', params.id);
 
-      // Execute query
-      const docSnap = await getDoc(photoRef);
+    // Execute query
+    const docSnap = await getDoc(photoRef);
 
-      if (docSnap.exists()) {
-        // Get category name
-        const categRef = doc(db, 'categories', docSnap.data().categoryRef);
-        const categSnap = await getDoc(categRef);
-
-        if (categSnap.data().name) {
-          setCategoryName(categSnap.data().name);
-        } else {
-          console.log('Category not registered')
-        }
-
-        // Get photo URL
-        const imagePath = `photos/${auth.currentUser.uid}/${docSnap.data().photoRef}`;
-        const photoRef = ref(storage, imagePath);
-        getDownloadURL(photoRef).then(url => {
+    if (docSnap.exists()) {
+      let categName;
+      // Get photo URL
+      const imagePath = `photos/${auth.currentUser.uid}/${docSnap.data().photoRef}`;
+      const photoRef = ref(storage, imagePath);
+      getDownloadURL(photoRef)
+        .then((url) => {
           setOriginalPhotoURL(url);
           setImagePreviewData(url);
-        });
-
-        setPhotoInfo(docSnap.data());
-        setFormData({ ...docSnap.data()});
-        setLoading(false);
-      } else {
-        navigate('/photos');
-        toast.error('Photo does not exist');
-      }
-    } catch(err) {
-      console.log(err);
+        })
+        .then(() => {
+           // if categoryRef does not exists, set category name as not registered
+          if (docSnap.data().categoryRef.length === 0) {
+            categName = 'NOT REGISTERED';
+          } else {
+            // If categoryRef exists, get category name from DB
+            const categRef = doc(db, 'categories', docSnap.data().categoryRef);
+            categName = getDoc(categRef).data().name;
+          }
+        })
+        .then(() => {
+          setCategoryName(categName);
+          setPhotoInfo(docSnap.data());
+          setFormData({ ...docSnap.data()});
+          setLoading(false);
+        })
+        .catch((err) => {
+          navigate('/photos');
+          toast.error('Error fetching data');
+          console.log('Error fetching data');
+          console.log(err);
+        })
+    } else {
       navigate('/photos');
-      toast.error('Issue fetching photo info');
+      toast.error('Photo does not exist');
+      console.log('Photo does not exist');
     }
   }
 

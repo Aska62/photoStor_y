@@ -122,10 +122,9 @@ const Photos = ({ headerWhite }) => {
         {loading ? (<>Loading...</>) : (<>
           {photoInfoList.length > 0 && <>
             {photoInfoList.map((info, index) => (
-              <div className="photo-list-card">
+              <div className="photo-list-card" key={index}>
                 <Link
                   to={`/photos/view/${info.id}`}
-                  key={index}
                   className="link"
                 >
                   <img
@@ -137,7 +136,6 @@ const Photos = ({ headerWhite }) => {
                 <div className="link photo-list_info">
                   <Link
                     to={`/photos/view/${info.id}`}
-                    key={index}
                     className="link"
                   >
                     <h3 className="photo-list_title">{info.data.title}</h3>

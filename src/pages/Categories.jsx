@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, doc, getDocs, query, where, addDoc, writeBatch, deleteDoc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase.config';
+import { toast } from 'react-toastify';
 import { MdOutlineCancel } from "react-icons/md";
 import Header from "../components/Header";
 
@@ -127,22 +128,67 @@ const Categories = ({ headerWhite }) => {
   }
 
   // Delete existing category
-  const onDeleteCategory = (categoryId, categoryName) => {
-    if (!window.confirm(`Are you sure you want to delete ${categoryName}?`)) return;
+  const onDeleteCategory = async (categoryId, categoryName) => {
+    if (!window.confirm(`Are you sure you want to delete '${categoryName}'?`)) return;
 
-    deleteDoc(doc(db, "categories", categoryId))
-      .then(() => {
-        alert(`Deleted ${categoryName}`);
-        fetchCategories();
-      })
-      .catch(() => {
-        alert(`Failed to delete ${categoryName}`);
-      })
+    // Check for photos with the target category assigned
+    const photoRef = collection(db, 'photos');
+    let q = query(
+      photoRef,
+      where('categoryRef', '==', categoryId)
+    )
+    const querySnap = await getDocs(q);
+
+    if (!querySnap.empty) {
+      // If the related photo data exists, update those categoryRef
+      try {
+        // Prepare data to update
+        const batch = writeBatch(db);
+        querySnap.forEach((photo) => {
+          let docRef = doc(db, 'photos', photo.id);
+          batch.update(docRef, {
+            categoryRef: '',
+            updatedAt: Timestamp.now(),
+          })
+        });
+
+        // Execute update
+        batch.commit()
+          .then(() => {
+            // Delete the category
+            deleteDoc(doc(db, "categories", categoryId))
+            .then(() => {
+              fetchCategories();
+              toast.success(`'${categoryName}' deleted`);
+              console.log(`'${categoryName}' deleted`)
+            })
+            .catch(() => {
+              toast.error(`Failed to delete '${categoryName}'`);
+              console.log(`Failed to delete '${categoryName}'`);
+            })
+          })
+      } catch (err) {
+        toast.error('Error updating related photo data');
+        console.log('Error updating related photo data');
+        console.log(err);
+      }
+    } else {
+      deleteDoc(doc(db, "categories", categoryId))
+        .then(() => {
+          fetchCategories();
+          toast.success(`'${categoryName}' deleted`);
+          console.log(`'${categoryName}' deleted`)
+        })
+        .catch(() => {
+          toast.error(`Failed to delete '${categoryName}'`);
+          console.log(`Failed to delete '${categoryName}'`);
+        })
+    }
   }
 
   return (
     <>
-      <Header white={headerWhite} />
+      <Header white={ headerWhite } />
       <main className="main main_categories">
         {loading ? <p>Loading...</p> : <>
           <h2 className="page-title_categories">Categories</h2>
@@ -180,11 +226,11 @@ const Categories = ({ headerWhite }) => {
                   Cancel
                 </button>
                 <ul className="category-ul">
-                  {categories.map((category) => (
-                    <li className="category-li" key={category.id}>
+                  {categories.map((category, index) => (
+                    <li className="category-li" key={index}>
                       <MdOutlineCancel
                         className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
-                        onClick={() => onDeleteCategory(category.id)}
+                        onClick={() => onDeleteCategory(category.id, category.name)}
                       />
                       <input
                         type='text'

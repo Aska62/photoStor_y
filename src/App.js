@@ -22,7 +22,7 @@ function App() {
           <Route path='/photos/add' element={<AddPhoto headerWhite={true} />} />
         </Route>
         <Route path='/categories' element={<PrivateRoute />} >
-          <Route path='/categories' element={<Categories headerWhite={false} />} />
+          <Route path='/categories' element={<Categories headerWhite={true} />} />
         </Route>
       </Routes>
     </Router>

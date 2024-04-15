@@ -1,5 +1,5 @@
 .main_categories {
-  background-color: var(--root-color-blue);
+  background-color: var(--root-color-white);
   width: 100vw;
   height: fit-content;
   min-height: calc(100vh - 3rem);
@@ -42,14 +42,14 @@
   display: block;
 }
 .category-input {
-  background-color: var(--root-color-blue);
+  background-color: var(--root-color-white);
   border: none;
   width: 90%;
   max-width: 300px;
   height: 1.5rem;
 }
 .category-input_editing {
-  background-color: var(--root-color-white);
+  border: 1px solid var(--root-color-black);
   border-radius: 3px;
 }
 .category-input_editing:focus {
