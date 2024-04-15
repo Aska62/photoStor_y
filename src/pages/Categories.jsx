@@ -17,6 +17,7 @@ const Categories = ({ headerWhite }) => {
   const auth = getAuth();
 
   const categRef = collection(db, 'categories');
+  const photoRef = collection(db, 'photos');
 
   useEffect(()=> {
     fetchCategories();
@@ -25,23 +26,35 @@ const Categories = ({ headerWhite }) => {
   // Fetch all category of the user
   const fetchCategories = async () => {
     try {
+      // Get categories
       let q = query(
         categRef,
         where('userRef', '==', auth.currentUser.uid)
       )
-
-      const querySnap = await getDocs(q);
-
+      const categQuerySnap = await getDocs(q);
       let fetchedCateg = [];
-      querySnap.forEach((doc) => {
-        fetchedCateg.push({
-          id: doc.id,
-          name: doc.data().name,
-          editedName: ''
-        });
-      });
 
-      setCategories(fetchedCateg);
+      if (!categQuerySnap.empty) {
+        // Get number of photos registered
+        categQuerySnap.forEach(async (doc) => {
+          let photoQ = query(
+            photoRef,
+            where('categoryRef', '==', doc.id)
+          )
+          let photoSnap = await getDocs(photoQ);
+          let photoCount = (photoSnap.empty) ? 0 : photoSnap.size;
+
+          fetchedCateg.push({
+            id: doc.id,
+            name: doc.data().name,
+            editedName: '',
+            photoCount
+          });
+
+          setCategories(fetchedCateg);
+        });
+      }
+
       setLoading(false);
     } catch(err) {
       console.log(err);
@@ -70,6 +83,13 @@ const Categories = ({ headerWhite }) => {
     } catch (err) {
       console.log('failed to add data');
       setLoading(false);
+    }
+  }
+
+  // Cancel adding new category on outside the modal click
+  const onOutsideModalClick = (e) => {
+    if (e.target.className.includes("add-categ_background")) {
+      setAddingNew(false);
     }
   }
 
@@ -128,8 +148,11 @@ const Categories = ({ headerWhite }) => {
   }
 
   // Delete existing category
-  const onDeleteCategory = async (categoryId, categoryName) => {
-    if (!window.confirm(`Are you sure you want to delete '${categoryName}'?`)) return;
+  const onDeleteCategory = async (categoryId, categoryName, photoCount) => {
+    if (!window.confirm(`Delete '${categoryName}'?`)) return;
+    if (photoCount > 0) {
+      if (!window.confirm(`The category of ${photoCount} photo records(s) will be empty. OK to proceed?`)) return;
+    }
 
     // Check for photos with the target category assigned
     const photoRef = collection(db, 'photos');
@@ -189,9 +212,9 @@ const Categories = ({ headerWhite }) => {
   return (
     <>
       <Header white={ headerWhite } />
-      <main className="main main_categories">
+      <main className={`main main_categories ${addingNew ? 'no-scroll' : ''}`}>
+        <h2 className="page-title">Categories</h2>
         {loading ? <p>Loading...</p> : <>
-          <h2 className="page-title_categories">Categories</h2>
           <section className="categ-container">
             <button
               type="button"
@@ -205,32 +228,34 @@ const Categories = ({ headerWhite }) => {
               <form className="categories-edit-form">
                 <button
                   type='button'
-                  className={`btn btn_edit-categories ${editing ? 'btn_hidden' : ''}`}
+                  className={`btn btn_edit-categories ${editing ? 'hidden' : ''}`}
                   onClick={() => setEditing(true)}
                   disabled={addingNew ? true : false}
                 >
                   Edit
                 </button>
-                <button
-                  type='button'
-                  className={`btn btn_save-categories ${!editing ? 'btn_hidden' : ''}`}
-                  onClick={onUpdate}
-                >
-                  Save
-                </button>
-                <button
-                  type='button'
-                  className={`btn btn_cancel btn_cancel-categories ${!editing ? 'btn_hidden' : ''}`}
-                  onClick={onEditCancel}
-                >
-                  Cancel
-                </button>
+                <div className={`categories-btn_edit-box ${!editing ? 'hidden' : ''}`}>
+                  <button
+                    type='button'
+                    className="btn btn_save-categories"
+                    onClick={onUpdate}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type='button'
+                    className='btn btn_cancel btn_cancel-categories'
+                    onClick={onEditCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
                 <ul className="category-ul">
                   {categories.map((category, index) => (
                     <li className="category-li" key={index}>
                       <MdOutlineCancel
                         className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
-                        onClick={() => onDeleteCategory(category.id, category.name)}
+                        onClick={() => onDeleteCategory(category.id, category.name, category.photoCount)}
                       />
                       <input
                         type='text'
@@ -241,39 +266,48 @@ const Categories = ({ headerWhite }) => {
                         disabled={editing ? false : true}
                         onChange={(e) => {onCategoryChange(e.target.value, category.id)}}
                       />
+                      <p className="category_entries">&#040;{category.photoCount}&#041;</p>
                     </li>
                   ))}
                 </ul>
               </form>
             ) : (
               <>
-                <p>No category registered</p>
+                <p className="note_no-record-found">No category registered</p>
               </>
             )}
           </section>
-          <div className={`add-category-modal ${addingNew ? 'add-category-modal_visible' : ''}`}>
-            <h3 className="title_add-category">Add New Category</h3>
-            <form className="form_add-category">
-              <input
-                type='text'
-                id='category'
-                className="input input_category"
-                onChange={(e) => {setNewCategory(e.target.value)}}
-              />
-              <button
-                className="btn btn_new-category"
-                onClick={(e) => {onNewCategorySubmit(e)}}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="btn btn_cancel"
-                onClick={() => setAddingNew(false)}
-              >
-                Cancel
-              </button>
-            </form>
+          <div
+            className={`add-categ_background ${addingNew ? 'visible_block' : ''}`}
+            onClick={(e) => onOutsideModalClick(e)}
+          >
+            <div className={`add-category-modal ${addingNew ? 'visible_flex' : ''}`}>
+              <h3 className="title_add-category">Add New Category</h3>
+              <form className="form_add-category">
+                <input
+                  type='text'
+                  id='category'
+                  className="input input_new-category"
+                  onChange={(e) => {setNewCategory(e.target.value)}}
+                  placeholder="Please input category name"
+                />
+                <div className="new-category-btn-container">
+                  <button
+                    className="btn btn_new-category"
+                    onClick={(e) => {onNewCategorySubmit(e)}}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn_cancel"
+                    onClick={() => setAddingNew(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </>}
       </main>

@@ -300,6 +300,7 @@ const Photo = ({ headerWhite }) => {
     <>
       <Header white={headerWhite} />
       <main className="main main_photo">
+        <h2 className="page-title">Photo</h2>
         {loading ? <p>Loading...</p> : <>
           <form className="photo-form-container">
             {photoInfo ? (<>
@@ -319,7 +320,7 @@ const Photo = ({ headerWhite }) => {
                       onChange={(e) => onFileSelect(e)}
                     />
                     <button
-                      className={`btn btn_gray btn_photo-cancel btn_large btn_photo-edit-cancel ${editing ? '' : 'btn_hidden'} ${changeImage ? '' : 'btn_disabled'}`}
+                      className={`btn btn_gray btn_photo-cancel btn_large btn_photo-edit-cancel ${editing ? '' : 'hidden'} ${changeImage ? '' : 'btn_disabled'}`}
                       disabled={changeImage ? false : true}
                       onClick={(e) => cancelImageChange(e)}
                     >
@@ -408,28 +409,28 @@ const Photo = ({ headerWhite }) => {
                   <div className="photo-btn-box">
                     <button
                       type='button'
-                      className={`btn ${editing ? 'btn_hidden' : ''}`}
+                      className={`btn ${editing ? 'hidden' : ''}`}
                       onClick={() => navigate('/photos')}
                     >
                       Back to List
                     </button>
                     <button
                       type='button'
-                      className={`btn ${editing ? 'btn_hidden' : ''}`}
+                      className={`btn ${editing ? 'hidden' : ''}`}
                       onClick={() => setEditing(true)}
                     >
                       Edit
                     </button>
                     <button
                       type='button'
-                      className={`btn ${editing ? '' : 'btn_hidden'}`}
+                      className={`btn ${editing ? '' : 'hidden'}`}
                       onClick={() => setEditing(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type='button'
-                      className={`btn ${editing ? '' : 'btn_hidden'}`}
+                      className={`btn ${editing ? '' : 'hidden'}`}
                       onClick={(e) => onSubmit(e)}
                     >
                       Save
@@ -448,7 +449,7 @@ const Photo = ({ headerWhite }) => {
               No photo info found
               <button
                 type='button'
-                className={`btn ${editing ? 'btn_hidden' : ''}`}
+                className={`btn ${editing ? 'hidden' : ''}`}
                 onClick={() => navigate('/photos')}
               >
                 Back to List

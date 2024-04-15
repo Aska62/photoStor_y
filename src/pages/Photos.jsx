@@ -48,41 +48,39 @@ const Photos = ({ headerWhite }) => {
         q = query(
           q,
           where('categoryRef', '==', categoryRef)
-        )
+        );
       }
 
       // Execute query
-      let querySnap = await getDocs(q);
+      const querySnap = await getDocs(q);
 
       // If no matching record, clear category selection
       if (categoryRef && querySnap.docs.length === 0) {
-        q = query(
-          photoInfoRef,
-          where('userRef', '==', auth.currentUser.uid),
-          orderBy('date', 'asc'),
-        );
-
-        querySnap = await getDocs(q);
         emptyCategory = true;
       }
 
-      // Alter to list
-      let fetchedPhotoInfo = [];
-      querySnap.forEach((doc) => {
-        // Image path
-        const imagePath = `photos/${auth.currentUser.uid}/resized`;
-        // Get photo URL
-        const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${RESIZED_PHOTO_SIZE}`);
+      if (querySnap.docs.length > 0) {
+        let fetchedPhotoInfo = [];
+        // Alter to list
+        querySnap.forEach((doc) => {
+          // Image path
+          const imagePath = `photos/${auth.currentUser.uid}/resized`;
+          // Get photo URL
+          const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${RESIZED_PHOTO_SIZE}`);
 
-        getDownloadURL(photoRef).then((url) => {
-          fetchedPhotoInfo = [...fetchedPhotoInfo, {
-            id: doc.id,
-            data: doc.data(),
-            photoURL: url,
-          }]
-          setPhotoInfoList(fetchedPhotoInfo);
+          getDownloadURL(photoRef).then((url) => {
+            fetchedPhotoInfo = [...fetchedPhotoInfo, {
+              id: doc.id,
+              data: doc.data(),
+              photoURL: url,
+            }]
+
+            setPhotoInfoList(fetchedPhotoInfo);
+          })
         })
-      })
+      } else {
+        setPhotoInfoList([]);
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -102,12 +100,13 @@ const Photos = ({ headerWhite }) => {
     <>
       <Header white={headerWhite} />
       <main className="main main_photos">
+        <h2 className="page-title">Photos</h2>
         <div className="photo-list_heading-box">
           <Link
             className="btn link link-btn link-btn_add"
             to={`${PHOTOS_PAGE_URL}/add`}
           >
-            Add New Photo
+            Add New
           </Link>
           <div className="list-category-selector">
             <label>Category </label>
@@ -120,7 +119,9 @@ const Photos = ({ headerWhite }) => {
           </div>
         </div>
         {loading ? (<>Loading...</>) : (<>
-          {photoInfoList.length > 0 && <>
+          {photoInfoList.length === 0 ? <>
+            <p className="note_no-record-found">No photo registered</p>
+          </> : <>
             {photoInfoList.map((info, index) => (
               <div className="photo-list-card" key={index}>
                 <Link

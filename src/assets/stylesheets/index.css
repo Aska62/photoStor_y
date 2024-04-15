@@ -14,12 +14,18 @@ li {
 ul {
   padding: 0;
 }
-select:focus {
+input:focus, select:focus {
   outline: none;
 }
 .main {
   z-index: 0;
 }
+.page-title {
+  margin: 0 auto auto 2rem;
+  font-weight: 300;
+  line-height: 2;
+}
+
 .btn {
   width: 6rem;
   height: 1.7rem;
@@ -32,9 +38,6 @@ select:focus {
 }
 .btn:hover {
   cursor: pointer;
-}
-.btn_hidden {
-  display: none;
 }
 .btn_cancel {
   background-color: #bfaa1f
@@ -54,13 +57,36 @@ select:focus {
 .link-btn {
   width: fit-content;
   height: 1.6rem;
-  padding: 3px 5px;
   line-height: 1.6rem;
   vertical-align: middle;
+}
+.link-btn_add {
+  margin-right: 3rem;
+  width: 6rem;
+  text-align: center;
 }
 
 .link {
   text-decoration: none;
+}
+
+.note_no-record-found {
+  text-align: center;
+  margin: 5rem auto;
+}
+
+.visible_block {
+  display: block
+}
+.visible_flex {
+  display: flex;
+}
+.hidden {
+  display: none;
+}
+
+.no-scroll {
+  overflow: hidden;
 }
 
 @import url('./components/header.css');
