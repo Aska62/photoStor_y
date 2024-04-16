@@ -12,7 +12,7 @@ import { PHOTOS_PAGE_URL, RESIZED_PHOTO_SIZE } from '../constants.js';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption.jsx";
 
-const Photos = ({ headerWhite }) => {
+const Photos = () => {
   const auth = getAuth();
   const photosFetched = useRef(false);
   const categFetched = useRef(false);
@@ -98,7 +98,7 @@ const Photos = ({ headerWhite }) => {
 
   return (
     <>
-      <Header white={headerWhite} />
+      <Header />
       <main className="main main_photos">
         <h2 className="page-title">Photos</h2>
         <div className="photo-list_heading-box">

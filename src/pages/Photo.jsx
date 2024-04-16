@@ -14,7 +14,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import { RESIZED_PHOTO_SIZE } from '../constants.js';
 
-const Photo = ({ headerWhite }) => {
+const Photo = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const params = useParams();
@@ -298,7 +298,7 @@ const Photo = ({ headerWhite }) => {
 
   return (
     <>
-      <Header white={headerWhite} />
+      <Header />
       <main className="main main_photo">
         <h2 className="page-title">Photo</h2>
         {loading ? <p>Loading...</p> : <>

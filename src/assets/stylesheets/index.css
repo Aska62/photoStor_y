@@ -70,6 +70,13 @@ input:focus, select:focus {
   text-decoration: none;
 }
 
+.input_editing {
+  border: 1px solid var(--root-color-black);
+}
+.input:focus {
+  outline: none;
+}
+
 .note_no-record-found {
   text-align: center;
   margin: 5rem auto;
@@ -89,9 +96,18 @@ input:focus, select:focus {
   overflow: hidden;
 }
 
+.main-image {
+  width: 100vw;
+  height: 45%;
+  background-position: center;
+  background-size: cover;
+  z-index: 1;
+}
+
 @import url('./components/header.css');
 @import url('./pages/home.css');
 @import url('./pages/photo.css');
 @import url('./pages/addPhoto.css');
 @import url('./pages/photos.css');
 @import url('./pages/categories.css');
+@import url('./pages/profile.css');

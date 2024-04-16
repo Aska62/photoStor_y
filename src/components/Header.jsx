@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL } from '../constants.js';
+import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL, PROFILE_PAGE_URL } from '../constants.js';
 import { IoLogOutOutline } from "react-icons/io5";
 
-const Header = ({ white }) => {
+const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = getAuth();
@@ -17,8 +17,10 @@ const Header = ({ white }) => {
   }
 
   return (
-    <header className={white ? 'header_white' : ''}>
-      <div className="header-app-title">PhotoStory</div>
+    <header >
+      <Link to={HOME_PAGE_URL} className="link">
+        <h1 className="header-app-title">PhotoStory</h1>
+      </Link>
       <div className="hamburger-container" onClick={()=>setHamburgerOpen(!hamburgerOpen)}>
         <div className={`hamburger-line hamburger-line_top ${hamburgerOpen ? 'hamburger-line_top_open' : ''}`}></div>
         <div className={`hamburger-line hamburger-line_middle ${hamburgerOpen ? 'hamburger-line_middle_open' : ''}`}></div>
@@ -28,15 +30,27 @@ const Header = ({ white }) => {
         <Link
           to={HOME_PAGE_URL}
           className={`nav-item ${location.pathname === HOME_PAGE_URL ? 'nav-item_current' : ''}`}
-        >Home</Link>
+        >
+          Home
+        </Link>
         <Link
           to={PHOTOS_PAGE_URL}
           className={`nav-item ${location.pathname === PHOTOS_PAGE_URL ? 'nav-item_current' : ''}`}
-        >Photos</Link>
+        >
+          Photos
+        </Link>
         <Link
           to={CATEGORIES_PAGE_URL}
           className={`nav-item ${location.pathname === CATEGORIES_PAGE_URL ? 'nav-item_current' : ''}`}
-        >Categories</Link>
+        >
+          Categories
+        </Link>
+        <Link
+          to={PROFILE_PAGE_URL}
+          className={`nav-item ${location.pathname === PROFILE_PAGE_URL ? 'nav-item_current' : ''}`}
+        >
+          Profile
+        </Link>
         <IoLogOutOutline className="nav-item nav-item_logout" onClick={onLogout} />
       </nav>
     </header>

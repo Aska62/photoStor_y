@@ -57,13 +57,7 @@
   width: 90%;
   max-width: 300px;
   height: 1.5rem;
-}
-.category-input_editing {
-  border: 1px solid var(--root-color-black);
   border-radius: 3px;
-}
-.category-input_editing:focus {
-  outline: none;
 }
 .category_entries {
   font-size: 0.9rem;

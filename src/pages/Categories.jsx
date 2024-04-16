@@ -6,15 +6,15 @@ import { toast } from 'react-toastify';
 import { MdOutlineCancel } from "react-icons/md";
 import Header from "../components/Header";
 
-const Categories = ({ headerWhite }) => {
+const Categories = () => {
+  const auth = getAuth();
+
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [addingNew, setAddingNew] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [editing, setEditing] = useState(false);
   const [nameAltered, setNameAltered] = useState(false);
-
-  const auth = getAuth();
 
   const categRef = collection(db, 'categories');
   const photoRef = collection(db, 'photos');
@@ -211,7 +211,7 @@ const Categories = ({ headerWhite }) => {
 
   return (
     <>
-      <Header white={ headerWhite } />
+      <Header />
       <main className={`main main_categories ${addingNew ? 'no-scroll' : ''}`}>
         <h2 className="page-title">Categories</h2>
         {loading ? <p>Loading...</p> : <>
@@ -262,7 +262,7 @@ const Categories = ({ headerWhite }) => {
                         name='category'
                         id={category.id}
                         value={category.editedName.length > 0 ? category.editedName : category.name}
-                        className={`category-input ${editing ? 'category-input_editing' : ''}`}
+                        className={`input category-input ${editing ? 'input_editing' : ''}`}
                         disabled={editing ? false : true}
                         onChange={(e) => {onCategoryChange(e.target.value, category.id)}}
                       />

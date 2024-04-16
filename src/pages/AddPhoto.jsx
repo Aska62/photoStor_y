@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
 
-const AddPhoto = ({ headerWhite }) => {
+const AddPhoto = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const categFetched = useRef(false);
@@ -159,7 +159,7 @@ const AddPhoto = ({ headerWhite }) => {
 
   return (
     <>
-      <Header white={headerWhite} />
+      <Header />
       <main className="main main_photo">
         {loading ? <p>Loading...</p> : <>
           <form className="photo-form-container">

@@ -1,12 +1,12 @@
 import Header from "../components/Header"
 
-const Home = ({ headerWhite }) => {
+const Home = () => {
   return (
     <>
-      <Header headerWhite={headerWhite} />
+      <Header />
       <main className="main main_home">
-        <h1 className="main-title main-title_top">PhotoStory</h1>
-        <div className="main-image">
+        <h2 className="main-title main-title_top">PhotoStory</h2>
+        <div className="main-image main-image_home">
           <div className="main-image-cover"></div>
         </div>
         <p className="main-title main-title_bottom">PhotoStory</p>
