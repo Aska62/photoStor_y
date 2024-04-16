@@ -15,9 +15,7 @@
   opacity: .6;
 }
 .profile-container {
-  /* background-color: pink; */
   width: 100vw;
-  /* max-width: 600px; */
   position: absolute;
   top: calc(50vh - 3rem - 5rem);
   display: flex;

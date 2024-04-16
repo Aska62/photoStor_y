@@ -104,6 +104,17 @@ input:focus, select:focus {
   z-index: 1;
 }
 
+.form-err {
+  color: #e85548;
+  font-size: .8rem;
+  line-height: .8rem;
+}
+.input_err {
+  border: 1px solid #e85548;
+  border-radius: 3px;
+  line-height: 1.15;
+}
+
 @import url('./components/header.css');
 @import url('./pages/home.css');
 @import url('./pages/photo.css');

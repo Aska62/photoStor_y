@@ -29,6 +29,12 @@ const Photo = () => {
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
   const [changeImage, setChangeImage] = useState(false);
+  const [titleErr, setTitleErr] = useState('');
+  const [dateErr, setDateErr] = useState('');
+  const [locationErr, setLocationErr] = useState('');
+  const [categoryErr, setCategoryErr] = useState('');
+  const [noteErr, setNoteErr] = useState('');
+  const [imageErr, setImageErr] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     date: undefined,
@@ -73,14 +79,15 @@ const Photo = () => {
           setOriginalPhotoURL(url);
           setImagePreviewData(url);
         })
-        .then(() => {
+        .then(async () => {
            // if categoryRef does not exists, set category name as not registered
           if (docSnap.data().categoryRef.length === 0) {
             categName = 'NOT REGISTERED';
           } else {
             // If categoryRef exists, get category name from DB
             const categRef = doc(db, 'categories', docSnap.data().categoryRef);
-            categName = getDoc(categRef).data().name;
+            const categDoc = await getDoc(categRef);
+            categName = categDoc.data().name;
           }
         })
         .then(() => {
@@ -127,7 +134,7 @@ const Photo = () => {
   }
 
   const onFileSelect = (e) => {
-    setImagePreviewData(null)
+    setImagePreviewData(null);
     const files = e.target.files
     if (files.length > 0) {
       const file = files[0];
@@ -141,10 +148,12 @@ const Photo = () => {
 
       // Set data to save to DB
       setPhotoToUpload(file);
-      setChangeImage(true);
     } else {
+      setImagePreviewData(null);
+      setPhotoToUpload(null);
       toast.error('Failed to read the file');
     }
+    setChangeImage(true);
   }
 
   // Cancel image change
@@ -161,28 +170,35 @@ const Photo = () => {
     // validation
     let hasError = false;
 
+    setImageErr('');
+    setTitleErr('');
+    setDateErr('');
+    setLocationErr('');
+    setCategoryErr('');
+    setNoteErr('');
+
     if (changeImage && !photoToUpload) {
-      console.log('Please choose a photo');
+      setImageErr('Please choose a photo');
       hasError = true;
     }
     if (title.length === 0) {
-      console.log('Please input title');
+      setTitleErr('Please input title');
       hasError = true;
     }
     if (!date) {
-      console.log('Please select date');
+      setDateErr('Please choose date');
       hasError = true;
     }
     if (location.length === 0) {
-      console.log('Please input location');
+      setLocationErr('Please input location');
       hasError = true;
     }
     if (categoryRef.length === 0) {
-      console.log('Please choose category');
+      setCategoryErr('Please choose category');
       hasError = true;
     }
     if (note.length === 0) {
-      console.log('Please input note');
+      setNoteErr('Please input note');
       hasError = true;
     }
 
@@ -320,12 +336,13 @@ const Photo = () => {
                       onChange={(e) => onFileSelect(e)}
                     />
                     <button
-                      className={`btn btn_gray btn_photo-cancel btn_large btn_photo-edit-cancel ${editing ? '' : 'hidden'} ${changeImage ? '' : 'btn_disabled'}`}
+                      className={`btn btn_gray btn_photo-cancel btn_large ${editing ? '' : 'hidden'} ${changeImage ? '' : 'btn_disabled'}`}
                       disabled={changeImage ? false : true}
                       onClick={(e) => cancelImageChange(e)}
                     >
                       Choose Original
                     </button>
+                    <p className="form-err form-err_photo form-err_img">{imageErr ?? imageErr}</p>
                   </div>
                 </div>
                 <div className="photo-form_info-container">
@@ -343,55 +360,60 @@ const Photo = () => {
                       <input
                         type='text'
                         id='title'
-                        className="photo-info_input"
+                        className={`photo-info_input ${titleErr ? 'input_err' : ''}`}
                         value={title}
                         placeholder="Title"
                         onChange={(e) => onInputChange(e)}
                       />
+                      <p className="form-err form-err_photo">{titleErr ?? titleErr}</p>
                     </div>
                     <div className="photo-info_input-box">
                       <IoLocationOutline/>
                       <input
                         type='text'
                         id='location'
-                        className="photo-info_input"
+                        className={`photo-info_input ${locationErr ? 'input_err' : ''}`}
                         value={location}
                         placeholder="Location"
                         onChange={(e) => onInputChange(e)}
                       />
+                      <p className="form-err form-err_photo">{locationErr ?? locationErr}</p>
                     </div>
                     <div className="photo-info_input-box">
                       <MdOutlineDateRange/>
                       <input
                         type='date'
                         id='date'
-                        className="photo-info_input"
+                        className={`photo-info_input ${dateErr ? 'input_err' : ''}`}
                         value={moment.unix(date.seconds).format("YYYY-MM-DD")}
                         placeholder="Date"
                         onChange={(e) => onInputChange(e)}
                       />
+                      <p className="form-err form-err_photo">{dateErr ?? dateErr}</p>
                     </div>
                     <div className="photo-info_input-box">
                       <label htmlFor='title'>Category </label>
                       <select
                         id='categoryRef'
                         name='categoryRef'
-                        className="photo-info_input photo-info_select"
+                        className={`photo-info_input photo-info_select ${categoryErr ? 'input_err' : ''}`}
                         onChange={(e) => onInputChange(e)}
                         defaultValue={categoryRef}
                       >
                         <CategoryOption categFetched={categFetched} defMessage='Please select' />
                       </select>
+                      <p className="form-err form-err_photo">{categoryErr ?? categoryErr}</p>
                     </div>
                     <div className="photo-info_input-box_textarea">
                       <label htmlFor='note' className="photo-info_label_textarea">Note </label>
                       <textarea
                         id='note'
-                        className="photo-info_textarea"
+                        className={`photo-info_textarea ${noteErr ? 'input_err' : ''}`}
                         value={note}
                         placeholder="Note"
                         onChange={(e) => onInputChange(e)}
                       />
+                      <p className="form-err form-err_photo">{noteErr ?? noteErr}</p>
                     </div>
                     <div className="photo-info_input-box_checkbox">
                       <input
