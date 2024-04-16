@@ -262,7 +262,7 @@ const Categories = () => {
                         name='category'
                         id={category.id}
                         value={category.editedName.length > 0 ? category.editedName : category.name}
-                        className={`input category-input ${editing ? 'input_editing' : ''}`}
+                        className={`input category-input ${editing ? 'input_editing_category' : ''}`}
                         disabled={editing ? false : true}
                         onChange={(e) => {onCategoryChange(e.target.value, category.id)}}
                       />

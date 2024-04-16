@@ -70,9 +70,6 @@ input:focus, select:focus {
   text-decoration: none;
 }
 
-.input_editing {
-  border: 1px solid var(--root-color-black);
-}
 .input:focus {
   outline: none;
 }

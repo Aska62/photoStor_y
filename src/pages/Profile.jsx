@@ -14,6 +14,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [profAltered, setProfAltered] = useState(false);
+  const [userNameErr, setUserNameErr] = useState('');
+  const [emailErr, setEmailErr] = useState('');
+  const [descErr, setDescErr] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     userName: '',
@@ -63,28 +66,29 @@ const Profile = () => {
   }
 
   const onSubmit = async (e) => {
-    console.log('submit')
     e.preventDefault();
     setLoading(true);
-
 
     // validation
     let hasError = false;
 
+    setUserNameErr('');
+    setDescErr('');
+    setEmailErr('');
+
     if (userName.length === 0) {
-      console.log('Please input title');
+      setUserNameErr('Please input user name');
       hasError = true;
     }
     if (description.length === 0) {
-      console.log('Please describe yourself');
+      setDescErr('Please describe yourself');
       hasError = true;
     }
     if (email.length === 0) {
-      console.log('Please input email address');
+      setEmailErr('Please input email address');
       hasError = true;
-    }
-    if(!email.match(emailRegex)) {
-      console.log('Invalid email');
+    } else if(!email.match(emailRegex)) {
+      setEmailErr('Invalid email address');
       hasError = true;
     }
 
@@ -136,16 +140,17 @@ const Profile = () => {
                 type="text"
                 name="userName"
                 id="userName"
-                className={`input profile-input ${editing ? 'input_editing input_editing_profile' : ''}`}
+                className={`input profile-input ${editing ? 'input_editing_profile' : ''} ${userNameErr ? 'input_err' : ''}`}
                 placeholder="Input user name..."
                 disabled={editing ? false : true}
-                value={userName || name}
+                value={userName}
                 onChange={(e) => onInputChange(e)}
               />
+              <p className="form-err form-err_profile">{userNameErr ?? userNameErr}</p>
               <textarea
                 name="description"
                 id="description"
-                className={`input profile-input profile-input_textarea ${editing ? 'input_editing textarea_editing' : ''}`}
+                className={`input profile-input profile-input_textarea ${editing ? 'textarea_editing' : ''} ${descErr ? 'input_err' : ''}`}
                 placeholder="Describe yourself..."
                 cols="50"
                 rows="10"
@@ -153,19 +158,21 @@ const Profile = () => {
                 value={description}
                 onChange={(e) => onInputChange(e)}
               />
+              <p className="form-err form-err_profile">{descErr ?? descErr}</p>
               <label htmlFor="email" className="email-label">
                 email:
                 <input
                   type="email"
                   name="email"
                   id="email"
-                  className={`input profile-input profile-input_email ${editing ? 'input_editing input_editing_profile' : ''}`}
+                  className={`input profile-input profile-input_email ${editing ? 'input_editing_profile' : ''} ${emailErr ? 'input_err' : ''}`}
                   placeholder="Input email..."
                   disabled={editing ? false : true}
                   value={email}
                   onChange={(e) => onInputChange(e)}
                 />
               </label>
+              <p className="form-err form-err_profile">{emailErr ?? emailErr}</p>
               <button
                 type='button'
                 className={`btn btn_edit-categories ${editing ? 'hidden' : ''}`}

@@ -29,11 +29,8 @@ header {
   cursor: pointer;
 }
 .nav-item_current {
-  color: #f3f57f;
-  text-decoration: underline;
-}
-.header_white .nav-item_current {
   color: #edd747;
+  text-decoration: underline;
 }
 .hamburger-container {
   width: 1.2rem;

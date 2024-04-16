@@ -19,10 +19,27 @@
   padding: 0;
   background-color: rgba(35, 35, 35, .4);
 }
+.photo-input {
+  width: 68%;
+}
 .photo-input_image {
   width: 90%;
   max-width: 1200px;
 }
+.photo-info_input-box_checkbox_add {
+  width: 100%;
+  margin: 1.5rem auto 0 auto;
+}
+.photo-input_check {
+  width: fit-content;
+  margin-right: 3px;
+}
 .photo-btn-box_two {
   justify-content: space-around;
+}
+.form-err_img_add {
+  position: unset;
+  width: 90%;
+  text-align: left;
+  margin-top: 2px;
 }

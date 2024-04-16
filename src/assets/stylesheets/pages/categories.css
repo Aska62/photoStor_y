@@ -104,3 +104,6 @@
   display: flex;
   justify-content: space-evenly;
 }
+.input_editing_category {
+  border: 1px solid var(--root-color-black);
+}

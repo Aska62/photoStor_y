@@ -28,7 +28,7 @@
   border: none;
   width: 90%;
   max-width: 400px;
-  margin: 1rem auto;
+  margin: 1rem auto 0 auto;
   background-color: rgba(250, 248, 248, 0);
   color: var(--root-color-black);
 }
@@ -40,11 +40,15 @@
   width: 90%;
   max-width: 400px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  margin-right: 3px;
 }
 .input_editing_profile, .textarea_editing {
-  border: none;
-  /* background-color: var(--root-color-white); */
+  background-color: rgba(250, 248, 248, .6);
+  border-radius: 3px;
+}
+.input_editing_profile {
+  height: 1.2rem;
 }
 .textarea_editing {
   resize: vertical;
@@ -57,4 +61,10 @@
 }
 .btn_save-profile, .btn_cancel-profile {
   margin: 1rem 1.5rem;
+}
+.form-err_profile {
+  width: 90%;
+  max-width: 400px;
+  text-align: right;
+  margin: 0 auto 1px auto;
 }

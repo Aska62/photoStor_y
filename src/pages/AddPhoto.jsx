@@ -9,16 +9,24 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
+import { IoLocationOutline } from "react-icons/io5";
+import { MdOutlineDateRange } from "react-icons/md";
 
 const AddPhoto = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const categFetched = useRef(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
   const [hidePhoto, setHidePhoto] = useState(false);
+  const [titleErr, setTitleErr] = useState('');
+  const [dateErr, setDateErr] = useState('');
+  const [locationErr, setLocationErr] = useState('');
+  const [categoryErr, setCategoryErr] = useState('');
+  const [noteErr, setNoteErr] = useState('');
+  const [imageErr, setImageErr] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     date: undefined,
@@ -86,28 +94,35 @@ const AddPhoto = () => {
     // validation
     let hasError = false;
 
+    setImageErr('');
+    setTitleErr('');
+    setDateErr('');
+    setLocationErr('');
+    setCategoryErr('');
+    setNoteErr('');
+
     if (!photoToUpload) {
-      console.log('Please choose a photo');
+      setImageErr('Please choose a photo');
       hasError = true;
     }
     if (title.length === 0) {
-      console.log('Please input title');
+      setTitleErr('Please input title');
       hasError = true;
     }
     if (!date) {
-      console.log('Please select date');
+      setDateErr('Please choose date');
       hasError = true;
     }
     if (location.length === 0) {
-      console.log('Please input location');
+      setLocationErr('Please input location');
       hasError = true;
     }
     if (categoryRef.length === 0) {
-      console.log('Please choose category');
+      setCategoryErr('Please choose category');
       hasError = true;
     }
     if (note.length === 0) {
-      console.log('Please input note');
+      setNoteErr('Please input note');
       hasError = true;
     }
 
@@ -177,6 +192,7 @@ const AddPhoto = () => {
                   className="photo-input photo-input_image"
                   onChange={(e) => onFileSelect(e)}
                 />
+                <p className="form-err form-err_photo form-err_img form-err_img_add">{imageErr ?? imageErr}</p>
               </div>
               <ul className="photo-form_info-container">
                 <li className="photo-info_input-box">
@@ -187,30 +203,30 @@ const AddPhoto = () => {
                     name='title'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
-                  >
-                  </input>
+                  />
+                  <p className="form-err form-err_photo">{titleErr ?? titleErr}</p>
                 </li>
                 <li className="photo-info_input-box">
-                  <label className="photo-input-label" >Date</label>
+                  <MdOutlineDateRange/>
                   <input
                     type='date'
                     id='date'
                     name='date'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
-                  >
-                  </input>
+                  />
+                  <p className="form-err form-err_photo">{dateErr ?? dateErr}</p>
                 </li>
                 <li className="photo-info_input-box">
-                  <label className="photo-input-label" >Location</label>
+                  <IoLocationOutline/>
                   <input
                     type='text'
                     id='location'
                     name='location'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
-                  >
-                  </input>
+                  />
+                  <p className="form-err form-err_photo">{locationErr ?? locationErr}</p>
                 </li>
                 <li className="photo-info_input-box">
                   <label className="photo-input-label" >Category</label>
@@ -222,6 +238,7 @@ const AddPhoto = () => {
                   >
                     <CategoryOption categFetched={categFetched} defMessage='Please select' />
                   </select>
+                  <p className="form-err form-err_photo">{categoryErr ?? categoryErr}</p>
                 </li>
                 <li className="photo-info_input-box_textarea">
                   <label className="photo-input-label" >Note</label>
@@ -230,10 +247,10 @@ const AddPhoto = () => {
                     name='note'
                     className="photo-info_textarea"
                     onChange={(e) => onInputChange(e)}
-                  >
-                  </textarea>
+                  />
+                  <p className="form-err form-err_photo">{noteErr ?? noteErr}</p>
                 </li>
-                <li className="photo-info_input-box_checkbox">
+                <li className="photo-info_input-box_checkbox_add">
                   <input
                     type='checkbox'
                     id='hide'
@@ -243,7 +260,7 @@ const AddPhoto = () => {
                     onChange={(e) => onInputChange(e)}
                   >
                   </input>
-                  <label className="photo-input-label" >Hide photo</label>
+                  <label className="photo-input-label_hide" >Hide photo</label>
                 </li>
                 <li className="photo-btn-box photo-btn-box_two">
                   <button className='btn' onClick={(e) => onSubmit(e)}>Save</button>
