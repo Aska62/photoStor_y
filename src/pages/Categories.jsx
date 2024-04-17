@@ -315,25 +315,23 @@ const Categories = () => {
                 </div>
                 <ul className="category-ul">
                   {categories.map((category, index) => (
-                    <>
-                      <li className="category-li" key={index}>
-                        <MdOutlineCancel
-                          className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
-                          onClick={() => onDeleteCategory(category.id, category.name, category.photoCount)}
-                        />
-                        <input
-                          type='text'
-                          name='category'
-                          id={category.id}
-                          value={category.name}
-                          className={`input category-input ${editing ? 'input_editing_category' : ''} ${category.editErr ? 'input_err' : ''}`}
-                          disabled={editing ? false : true}
-                          onChange={(e) => onCategoryChange(e.target.value, category.id)}
-                        />
-                        <p className="category_entries">&#040;{category.photoCount}&#041;</p>
-                        <p className="form-err form-err_category">{category.editErr ?? category.editErr}</p>
-                      </li>
-                    </>
+                    <li className="category-li" key={index}>
+                      <MdOutlineCancel
+                        className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
+                        onClick={() => onDeleteCategory(category.id, category.name, category.photoCount)}
+                      />
+                      <input
+                        type='text'
+                        name='category'
+                        id={category.id}
+                        value={category.name}
+                        className={`input category-input ${editing ? 'input_editing_category' : ''} ${category.editErr ? 'input_err' : ''}`}
+                        disabled={editing ? false : true}
+                        onChange={(e) => onCategoryChange(e.target.value, category.id)}
+                      />
+                      <p className="category_entries">&#040;{category.photoCount}&#041;</p>
+                      <p className="form-err form-err_category">{category.editErr ?? category.editErr}</p>
+                    </li>
                   ))}
                 </ul>
               </form>
