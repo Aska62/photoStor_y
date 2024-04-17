@@ -113,6 +113,7 @@ input:focus, select:focus {
 }
 
 @import url('./components/header.css');
+@import url('./pages/login.css');
 @import url('./pages/home.css');
 @import url('./pages/photo.css');
 @import url('./pages/addPhoto.css');

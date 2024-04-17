@@ -1,0 +1,32 @@
+.main_login {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.main-title_top_login {
+  margin: unset;
+  margin-left: 3rem;
+  align-self: flex-start;
+}
+.main-title_bottom_login {
+  margin: unset;
+  margin-right: 3rem;
+  align-self: flex-end;
+}
+.login-box {
+  text-align: center;
+}
+.page-title_login {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.oauth {
+  font-size: 2rem;
+}
+.oauth:hover {
+  cursor: pointer;
+}

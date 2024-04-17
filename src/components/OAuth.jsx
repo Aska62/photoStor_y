@@ -43,7 +43,7 @@ const OAuth = () => {
   return (
     <div>
       <p>Sign {location.pathname === '/sign-up' ? 'up' : 'in'} with </p>
-      <FaGoogle onClick={onGoogleClick} />
+      <FaGoogle onClick={onGoogleClick} className='oauth' />
     </div>
   )
 }
