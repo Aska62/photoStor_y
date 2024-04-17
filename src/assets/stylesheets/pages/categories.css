@@ -26,11 +26,18 @@
 }
 .category-li {
   width: 100%;
-  height: 2rem;
+  height: 3.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1px;
+  position: relative;
+}
+.form-err_category {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0;
+  margin: 0 auto 0 1.8rem;
 }
 .categories-btn_edit-box {
   width: 80%;
@@ -95,7 +102,6 @@
   margin: 0 auto;
 }
 .input_new-category {
-  margin-bottom: 1rem;
   width: 80%;
 }
 .new-category-btn-container {
@@ -106,4 +112,9 @@
 }
 .input_editing_category {
   border: 1px solid var(--root-color-black);
+}
+.form-err_add-category {
+  width: 80%;
+  margin: 0 auto 1rem auto;
+  text-align: left;
 }

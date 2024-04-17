@@ -15,6 +15,7 @@ const Categories = () => {
   const [newCategory, setNewCategory] = useState('');
   const [editing, setEditing] = useState(false);
   const [nameAltered, setNameAltered] = useState(false);
+  const [addNewErr, setAddNewErr] = useState('');
 
   const categRef = collection(db, 'categories');
   const photoRef = collection(db, 'photos');
@@ -25,6 +26,7 @@ const Categories = () => {
 
   // Fetch all category of the user
   const fetchCategories = async () => {
+    setLoading(true);
     try {
       // Get categories
       let q = query(
@@ -47,7 +49,8 @@ const Categories = () => {
           fetchedCateg.push({
             id: doc.id,
             name: doc.data().name,
-            editedName: '',
+            edited: false,
+            editErr: '',
             photoCount
           });
 
@@ -67,6 +70,21 @@ const Categories = () => {
 
     setLoading(true);
     let categ = newCategory;
+
+    // Validation
+    setAddNewErr('');
+
+    if (categ.length === 0) {
+      setAddNewErr('Category name cannot be blanc');
+      setLoading(false);
+      return;
+    }
+
+    if (categories.find(category => category.name === categ)) {
+      setAddNewErr('The category name already exists');
+      setLoading(false);
+      return;
+    }
 
     try {
       const docRef = await addDoc(collection(db, 'categories'), {
@@ -96,7 +114,13 @@ const Categories = () => {
   // Input new category name to change existing category
   const onCategoryChange = (editedName, id) => {
     const editedCategories = categories.map(category => {
-      return (category.id === id) ? { id: category.id, name: category.name, editedName: editedName } : category;
+      return (category.id === id) ? {
+        id: category.id,
+        name: editedName,
+        edited: true,
+        editErr: category.editErr,
+        photoCount: category.photoCount
+      } : category;
     });
 
     setCategories(editedCategories);
@@ -105,35 +129,74 @@ const Categories = () => {
 
   // Update existing category
   const onUpdate = async () => {
-    // Filter non-modified categories
-    const categToUpdate = categories.filter((category) => category.editedName.length > 0);
+    setLoading(true);
+
+    // If no change, return
+    if (!nameAltered) {
+      setEditing(false);
+      setLoading(false)
+      return;
+    }
+
+    // Filter non-modified categories out
+    const categToUpdate = categories.filter((category) => category.edited);
+
+    if (Object.values(categToUpdate).length === 0) {
+      setEditing(false);
+      setLoading(false)
+      return;
+    }
+
+    // Validation
+    let hasError = false;
+    let categoryCopy = [...categories];
+
+    categToUpdate.forEach(category => {
+      if (category.name.length === 0) {
+        // If category name is blanc, set error
+        category.editErr = 'Category name cannot be blanc';
+        hasError = true;
+      } else if (categoryCopy.find(cat => ((cat.id !== category.id) && (cat.name === category.name)))) {
+        // If category name conflicts, set error
+        category.editErr = 'The category name already exists';
+        hasError = true;
+      } else {
+        category.editErr = '';
+      }
+    })
+
+    // Return if error
+    if (hasError) {
+      setCategories(categoryCopy); // set category for error update
+      setLoading(false);
+      return;
+    }
+
+    // Use batch to update multiple records
+    // Prepare data to update
+    const batch = writeBatch(db);
+    Object.values(categToUpdate).forEach(category => {
+      const docRef = doc(db, 'categories', category.id);
+      batch.update(docRef, {
+        name: category.name,
+        updatedAt: Timestamp.now(),
+      })
+    });
 
     // Update
-    if (nameAltered) {
-      // Use batch to update multiple records
-      // Prepare data to update
-      const batch = writeBatch(db);
-      Object.values(categToUpdate).forEach(category => {
-        const docRef = doc(db, 'categories', category.id);
-        batch.update(docRef, {
-          name: category.editedName,
-          updatedAt: Timestamp.now(),
-        })
-      });
-
-      // Update
-      batch.commit()
-        .then(()=> {
-          alert('successfully updated');
-          setEditing(false);
-          fetchCategories();
-        })
-        .catch ((err) => {
+    batch.commit()
+      .then(()=> {
+        alert('successfully updated');
+        // setEditing(false);
+        fetchCategories();
+      })
+      .catch ((err) => {
         console.log(err);
-        });
-    } else {
-      setEditing(false);
-    }
+      })
+      .finally(() => {
+        setEditing(false);
+        setLoading(false);
+      })
   }
 
   // Cancel editing existing categories
@@ -252,22 +315,25 @@ const Categories = () => {
                 </div>
                 <ul className="category-ul">
                   {categories.map((category, index) => (
-                    <li className="category-li" key={index}>
-                      <MdOutlineCancel
-                        className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
-                        onClick={() => onDeleteCategory(category.id, category.name, category.photoCount)}
-                      />
-                      <input
-                        type='text'
-                        name='category'
-                        id={category.id}
-                        value={category.editedName.length > 0 ? category.editedName : category.name}
-                        className={`input category-input ${editing ? 'input_editing_category' : ''}`}
-                        disabled={editing ? false : true}
-                        onChange={(e) => {onCategoryChange(e.target.value, category.id)}}
-                      />
-                      <p className="category_entries">&#040;{category.photoCount}&#041;</p>
-                    </li>
+                    <>
+                      <li className="category-li" key={index}>
+                        <MdOutlineCancel
+                          className={`categ-del-btn ${editing ? 'categ-del-btn_visible' : ''}`}
+                          onClick={() => onDeleteCategory(category.id, category.name, category.photoCount)}
+                        />
+                        <input
+                          type='text'
+                          name='category'
+                          id={category.id}
+                          value={category.name}
+                          className={`input category-input ${editing ? 'input_editing_category' : ''} ${category.editErr ? 'input_err' : ''}`}
+                          disabled={editing ? false : true}
+                          onChange={(e) => onCategoryChange(e.target.value, category.id)}
+                        />
+                        <p className="category_entries">&#040;{category.photoCount}&#041;</p>
+                        <p className="form-err form-err_category">{category.editErr ?? category.editErr}</p>
+                      </li>
+                    </>
                   ))}
                 </ul>
               </form>
@@ -287,14 +353,15 @@ const Categories = () => {
                 <input
                   type='text'
                   id='category'
-                  className="input input_new-category"
-                  onChange={(e) => {setNewCategory(e.target.value)}}
+                  className={`input input_new-category ${addNewErr ? 'input_err' : ''}`}
+                  onChange={(e) => setNewCategory(e.target.value)}
                   placeholder="Please input category name"
                 />
+                <p className="form-err form-err_add-category">{addNewErr ?? addNewErr}</p>
                 <div className="new-category-btn-container">
                   <button
                     className="btn btn_new-category"
-                    onClick={(e) => {onNewCategorySubmit(e)}}
+                    onClick={(e) => onNewCategorySubmit(e)}
                   >
                     Save
                   </button>
