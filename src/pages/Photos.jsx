@@ -30,7 +30,6 @@ const Photos = () => {
 
   const fetchPhotoInfo = async () => {
     setLoading(true);
-    let emptyCategory = false;
 
     try {
       // Create reference
@@ -53,11 +52,6 @@ const Photos = () => {
 
       // Execute query
       const querySnap = await getDocs(q);
-
-      // If no matching record, clear category selection
-      if (categoryRef && querySnap.docs.length === 0) {
-        emptyCategory = true;
-      }
 
       if (querySnap.docs.length > 0) {
         let fetchedPhotoInfo = [];

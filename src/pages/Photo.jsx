@@ -343,6 +343,7 @@ const Photo = () => {
                   <img
                     className='photo-for-view'
                     src={imagePreviewData}
+                    alt='preview'
                   />
                   <div className="image-edit-box">
                     <input

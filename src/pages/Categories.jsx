@@ -46,21 +46,21 @@ const Categories = () => {
           let photoSnap = await getDocs(photoQ);
           let photoCount = (photoSnap.empty) ? 0 : photoSnap.size;
 
-          fetchedCateg.push({
+          fetchedCateg = [...fetchedCateg , {
             id: doc.id,
             name: doc.data().name,
             edited: false,
             editErr: '',
             photoCount
-          });
+          }];
 
           setCategories(fetchedCateg);
-        });
+        })
       }
-
-      setLoading(false);
     } catch(err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   }
 

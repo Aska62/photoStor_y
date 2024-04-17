@@ -25,7 +25,6 @@ const Profile = () => {
   });
 
   const {
-    name,
     userName,
     email,
     description

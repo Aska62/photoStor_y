@@ -71,7 +71,7 @@ const AddPhoto = () => {
     } else if (e.target.id === "date") {
       setFormData((prevState) => ({
         ...prevState,
-        ['date']: Timestamp.fromMillis(Date.parse(e.target.value))
+        [e.target.id]: Timestamp.fromMillis(Date.parse(e.target.value))
       }));
     } else if (e.target.id === 'hide') {
       setFormData((prevState) => ({
@@ -183,6 +183,7 @@ const AddPhoto = () => {
                 <img
                   className="photo-for-view"
                   src={imagePreviewData}
+                  alt='preview'
                 />
                 <input
                   type='file'
