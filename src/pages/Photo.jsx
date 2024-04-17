@@ -410,13 +410,13 @@ const Photo = () => {
                       <p className="form-err form-err_photo">{dateErr ?? dateErr}</p>
                     </div>
                     <div className="photo-info_input-box">
-                      <label htmlFor='title'>Category </label>
+                      <label htmlFor='title'>Category</label>
                       <select
                         id='categoryRef'
                         name='categoryRef'
                         className={`photo-info_input photo-info_select ${categoryErr ? 'input_err' : ''}`}
                         onChange={(e) => onInputChange(e)}
-                        defaultValue={categoryRef}
+                        value={categoryRef}
                       >
                         <CategoryOption categFetched={categFetched} defMessage='Please select' />
                       </select>
