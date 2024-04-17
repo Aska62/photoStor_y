@@ -7,7 +7,6 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase.config.js";
 import moment from "moment";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { PHOTOS_PAGE_URL, RESIZED_PHOTO_SIZE } from '../constants.js';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption.jsx";
@@ -76,6 +75,7 @@ const Photos = () => {
         setPhotoInfoList([]);
       }
     } catch (err) {
+      toast.error('Error fetching data')
       console.log(err);
     } finally {
       setLoading(false)

@@ -5,7 +5,6 @@ import { getAuth } from 'firebase/auth';
 import { doc, getDoc, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { v4 } from "uuid";
 import moment from "moment";
 import Header from "../components/Header";
@@ -100,13 +99,11 @@ const Photo = () => {
         .catch((err) => {
           navigate('/photos');
           toast.error('Error fetching data');
-          console.log('Error fetching data');
           console.log(err);
         })
     } else {
       navigate('/photos');
       toast.error('Photo does not exist');
-      console.log('Photo does not exist');
     }
   }
 

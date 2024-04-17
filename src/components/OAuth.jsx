@@ -26,7 +26,6 @@ const OAuth = () => {
         // If user doesn't exist, error
         auth.signOut();
         toast.error('The account does not exist');
-        console.log('The account does not exist');
         //   await setDoc(doc(db, 'users', user.uid), {
         //     name: user.displayName,
         //     userName: user.displayName,

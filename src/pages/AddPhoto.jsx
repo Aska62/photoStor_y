@@ -6,7 +6,6 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
 import { IoLocationOutline } from "react-icons/io5";

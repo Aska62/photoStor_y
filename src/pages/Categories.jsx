@@ -246,16 +246,13 @@ const Categories = () => {
             .then(() => {
               fetchCategories();
               toast.success(`'${categoryName}' deleted`);
-              console.log(`'${categoryName}' deleted`)
             })
             .catch(() => {
               toast.error(`Failed to delete '${categoryName}'`);
-              console.log(`Failed to delete '${categoryName}'`);
             })
           })
       } catch (err) {
         toast.error('Error updating related photo data');
-        console.log('Error updating related photo data');
         console.log(err);
       }
     } else {
@@ -263,11 +260,10 @@ const Categories = () => {
         .then(() => {
           fetchCategories();
           toast.success(`'${categoryName}' deleted`);
-          console.log(`'${categoryName}' deleted`)
         })
-        .catch(() => {
+        .catch((err) => {
           toast.error(`Failed to delete '${categoryName}'`);
-          console.log(`Failed to delete '${categoryName}'`);
+          console.log(err);
         })
     }
   }

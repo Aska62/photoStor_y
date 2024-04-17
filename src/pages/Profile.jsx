@@ -50,7 +50,6 @@ const Profile = () => {
     } else {
       navigate('/');
       toast.error('Profile does not exist');
-      console.log('Profile does not exist')
     }
   }
 
