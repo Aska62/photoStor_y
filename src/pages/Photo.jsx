@@ -29,6 +29,7 @@ const Photo = () => {
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
   const [changeImage, setChangeImage] = useState(false);
+  const [inputAltered, setInputAltered] = useState(false);
   const [titleErr, setTitleErr] = useState('');
   const [dateErr, setDateErr] = useState('');
   const [locationErr, setLocationErr] = useState('');
@@ -110,6 +111,7 @@ const Photo = () => {
   }
 
   const onInputChange = (e) => {
+    setInputAltered(true);
     if (['title', 'location', 'note'].includes(e.target.id)) {
       setFormData((prevState) => ({
         ...prevState,
@@ -312,6 +314,22 @@ const Photo = () => {
     }
   }
 
+  const onCancelClick = () => {
+    if ((!inputAltered && !changeImage) || window.confirm('The modification will not be saved. Are you sure to cancel editing?')) {
+      setImageErr('');
+      setTitleErr('');
+      setDateErr('');
+      setLocationErr('');
+      setCategoryErr('');
+      setNoteErr('');
+
+      // Set form data back to original
+      setFormData({ ...photoInfo });
+
+      setEditing(false);
+    }
+  }
+
   return (
     <>
       <Header />
@@ -446,7 +464,7 @@ const Photo = () => {
                     <button
                       type='button'
                       className={`btn ${editing ? '' : 'hidden'}`}
-                      onClick={() => setEditing(false)}
+                      onClick={onCancelClick}
                     >
                       Cancel
                     </button>

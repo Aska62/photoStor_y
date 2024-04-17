@@ -114,10 +114,16 @@ const Profile = () => {
     }
   }
 
-  const onEditCancel = () => {
+  const onEditCancel = (e) => {
+    e.preventDefault();
+
     if (!profAltered) {
       setEditing(false);
     } else if (window.confirm('The modification will not be saved. Are you sure to cancel editing?')) {
+      setUserNameErr('');
+      setDescErr('');
+      setEmailErr('');
+
       setEditing(false);
       setProfAltered(false);
       fetchProfileInfo();
@@ -192,7 +198,7 @@ const Profile = () => {
                 <button
                   type='button'
                   className='btn btn_cancel btn_cancel-profile'
-                  onClick={onEditCancel}
+                  onClick={(e) => onEditCancel(e)}
                 >
                   Cancel
                 </button>
