@@ -7,7 +7,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase.config.js";
 import moment from "moment";
 import { toast } from 'react-toastify';
-import { PHOTOS_PAGE_URL, RESIZED_PHOTO_SIZE } from '../constants.js';
+import { PHOTOS_PAGE_URL, IMG_SIZE_THUMB_L, IMG_THUMB_L } from '../constants.js';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption.jsx";
 
@@ -57,9 +57,9 @@ const Photos = () => {
         // Alter to list
         querySnap.forEach((doc) => {
           // Image path
-          const imagePath = `photos/${auth.currentUser.uid}/resized`;
+          const imagePath = `photos/${auth.currentUser.uid}/${doc.data().orientation}/${IMG_THUMB_L}`;
           // Get photo URL
-          const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${RESIZED_PHOTO_SIZE}`);
+          const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${IMG_SIZE_THUMB_L}`);
 
           getDownloadURL(photoRef).then((url) => {
             fetchedPhotoInfo = [...fetchedPhotoInfo, {

@@ -13,12 +13,31 @@
 .photo-for-view {
   box-shadow: 4px 4px 5px rgba(35, 35, 35, .4);
   width: 90%;
-  min-height: 30%;
-  max-width: 1200px;
+  max-width: 1080px;
+  max-height: 720px;
   margin: 0 auto 1rem auto;
   padding: 0;
   background-color: rgba(35, 35, 35, .4);
 }
+.photo-preview_portrait {
+  max-width: unset;
+  max-height: unset;
+  width: 600px;
+  height: 900px;
+}
+.photo-preview_landscape {
+  max-width: unset;
+  max-height: unset;
+  width: 1080px;
+  height: 720px;
+}
+.photo-preview_panorama {
+  max-width: unset;
+  max-height: unset;
+  width: 1080px;
+  height: 600px;
+}
+
 .photo-input {
   width: 68%;
 }

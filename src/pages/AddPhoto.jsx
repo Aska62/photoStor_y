@@ -10,6 +10,11 @@ import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
+import {
+  IMG_PORTRAIT,
+  IMG_LANDSCAPE,
+  IMG_PANORAMA
+} from '../constants.js';
 
 const AddPhoto = () => {
   const auth = getAuth();
@@ -19,6 +24,7 @@ const AddPhoto = () => {
   const [loading, setLoading] = useState(false);
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
+  const [imageOrientation, setImageOrientation] = useState('');
   const [hidePhoto, setHidePhoto] = useState(false);
   const [titleErr, setTitleErr] = useState('');
   const [dateErr, setDateErr] = useState('');
@@ -51,6 +57,22 @@ const AddPhoto = () => {
       // Set data for preview
       reader.onload = (e) => {
         setImagePreviewData(e.target.result);
+        const img = new Image();
+        img.onload = function() {
+          // Get the dimensions of the image
+          const width = img.width;
+          const height = img.height;
+
+          // Set image orientation necessary for resize
+          if (width > height * 1.8) {
+            setImageOrientation(IMG_PANORAMA);
+          } else if (width > height) {
+            setImageOrientation(IMG_LANDSCAPE);
+          } else {
+            setImageOrientation(IMG_PORTRAIT);
+          }
+        }
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
 
@@ -133,13 +155,14 @@ const AddPhoto = () => {
     // Prepare complete data for update
     const formDataCopy = {
       ...formData,
+      orientation: imageOrientation,
       userRef: auth.currentUser.uid,
       createdAt: Timestamp.now(),
     }
 
     // Create File reference
     const photoId = v4();
-    const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${photoId}`);
+    const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${imageOrientation}/${photoId}`);
 
     // Upload photo to firebase storage
     uploadBytes(imageRef, photoToUpload)
@@ -151,15 +174,15 @@ const AddPhoto = () => {
           toast.success('Data stored successfully');
           navigate('/photos');
         } catch (err) {
-          toast.error('Failed to store data');
           console.log(err);
-        } finally {
-          setLoading(false);
+          toast.error('Failed to store data');
         }
       })
       .catch ((err) => {
         toast.error('Failed to upload photo');
         console.log(err);
+      })
+      .finally(() => {
         setLoading(false);
       })
   }
@@ -180,7 +203,7 @@ const AddPhoto = () => {
             <div className="photo-form_main">
               <div className="photo-form_image-container">
                 <img
-                  className="photo-for-view"
+                  className={`photo-for-view ${imageOrientation ? 'photo-preview_'+imageOrientation : ''}`}
                   src={imagePreviewData}
                   alt='preview'
                 />

@@ -11,7 +11,19 @@ import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
-import { RESIZED_PHOTO_SIZE } from '../constants.js';
+import {
+  IMG_PORTRAIT,
+  IMG_LANDSCAPE,
+  IMG_PANORAMA,
+  IMG_LARGE,
+  IMG_THUMB_S,
+  IMG_THUMB_L,
+  IMG_SIZE_PORTRAIT,
+  IMG_SIZE_LANDSCAPE,
+  IMG_SIZE_PANORAMA,
+  IMG_SIZE_THUMB_S,
+  IMG_SIZE_THUMB_L,
+} from '../constants.js';
 
 const Photo = () => {
   const auth = getAuth();
@@ -25,8 +37,10 @@ const Photo = () => {
   const [photoInfo, setPhotoInfo] = useState(null);
   const [categoryName, setCategoryName] = useState('');
   const [originalPhotoURL, setOriginalPhotoURL] = useState('');
+  const [origImageOrientation, setOrigImageOrientation] = useState('');
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
+  const [imageOrientation, setImageOrientation] = useState('');
   const [changeImage, setChangeImage] = useState(false);
   const [inputAltered, setInputAltered] = useState(false);
   const [titleErr, setTitleErr] = useState('');
@@ -71,9 +85,26 @@ const Photo = () => {
 
     if (docSnap.exists()) {
       let categName;
+
+      // get image size
+      let imageSize;
+      switch(docSnap.data().orientation) {
+        case IMG_PORTRAIT:
+          imageSize = IMG_SIZE_PORTRAIT;
+          break;
+        case IMG_LANDSCAPE:
+          imageSize = IMG_SIZE_LANDSCAPE;
+          break;
+        case IMG_PANORAMA:
+          imageSize = IMG_SIZE_PANORAMA;
+          break;
+      }
+
       // Get photo URL
-      const imagePath = `photos/${auth.currentUser.uid}/${docSnap.data().photoRef}`;
+      const imagePath = `photos/${auth.currentUser.uid}/${docSnap.data().orientation}/lg/${docSnap.data().photoRef}_${imageSize}`;
+      // Get ref
       const photoRef = ref(storage, imagePath);
+
       getDownloadURL(photoRef)
         .then((url) => {
           setOriginalPhotoURL(url);
@@ -93,6 +124,8 @@ const Photo = () => {
         .then(() => {
           setCategoryName(categName);
           setPhotoInfo(docSnap.data());
+          setImageOrientation(docSnap.data().orientation);
+          setOrigImageOrientation(docSnap.data().orientation);
           setFormData({ ...docSnap.data()});
           setLoading(false);
         })
@@ -112,7 +145,7 @@ const Photo = () => {
     if (['title', 'location', 'note'].includes(e.target.id)) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: e.target.value.trim(),
+        [e.target.id]: e.target.value
       }));
     } else if (e.target.id === "date") {
       setFormData((prevState) => ({
@@ -142,6 +175,23 @@ const Photo = () => {
       // Set data for preview
       reader.onload = (e) => {
         setImagePreviewData(e.target.result);
+        // console.log(e.target.result)
+        const img = new Image();
+        img.onload = function() {
+          // Get the dimensions of the image
+          const width = img.width;
+          const height = img.height;
+
+          // Set image orientation necessary for resize
+          if (width > height * 1.8) {
+            setImageOrientation(IMG_PANORAMA);
+          } else if (width > height) {
+            setImageOrientation(IMG_LANDSCAPE);
+          } else {
+            setImageOrientation(IMG_PORTRAIT);
+          }
+        }
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
 
@@ -159,12 +209,20 @@ const Photo = () => {
   const cancelImageChange = (e) => {
     e.preventDefault();
     setImagePreviewData(originalPhotoURL);
+    setImageOrientation(origImageOrientation);
     setChangeImage(false);
   }
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+      setFormData((prevState) => ({
+        ...prevState,
+        title: prevState.title.trim,
+        location: prevState.location.trim,
+        note: prevState.note.trim,
+      }));
 
     // validation
     let hasError = false;
@@ -210,28 +268,25 @@ const Photo = () => {
     let formDataCopy = {
       ...formData,
       userRef: auth.currentUser.uid,
-      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
     }
 
     if (changeImage) {
       // Create File reference
       const photoId = v4();
-      const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${photoId}`);
+      const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${imageOrientation}/${photoId}`);
 
       // Upload photo to firebase storage
       uploadBytes(imageRef, photoToUpload)
         .then(() => {
           // Get photo path
-          const originalImagePath = `photos/${auth.currentUser.uid}/${photoRef}`;
-          const resizedImagePath = `photos/${auth.currentUser.uid}/resized/${photoRef}_${RESIZED_PHOTO_SIZE}`;
-          // Get reference
-          const originalRef = ref(storage, originalImagePath);
-          const resizedRef = ref(storage, resizedImagePath);
+          const refs = getImageRefToDelete();
 
           // Delete files
           try {
-            deleteObject(originalRef);
-            deleteObject(resizedRef)
+            refs.forEach(ref => {
+              deleteObject(ref);
+            });
           } catch (err) {
             console.log('error deleting photo')
             console.log(err)
@@ -241,6 +296,7 @@ const Photo = () => {
           // Update database
           formDataCopy = {
             ...formDataCopy,
+            orientation: imageOrientation,
             photoRef: photoId
           }
           try {
@@ -287,16 +343,14 @@ const Photo = () => {
         deleteDoc(doc(db, 'photos', params.id))
           .then(()=> {
             // Get photo path
-            const originalImagePath = `photos/${auth.currentUser.uid}/${photoRef}`;
-            const resizedImagePath = `photos/${auth.currentUser.uid}/resized/${photoRef}_${RESIZED_PHOTO_SIZE}`;
-            // Get reference
-            const originalRef = ref(storage, originalImagePath);
-            const resizedRef = ref(storage, resizedImagePath);
+            const refs = getImageRefToDelete();
 
             // Delete files
             try {
-              deleteObject(originalRef);
-              deleteObject(resizedRef);
+              refs.forEach(ref => {
+                deleteObject(ref);
+              });
+
               navigate('/photos');
               toast.success('Deleted the photo data');
             } catch (err) {
@@ -309,6 +363,37 @@ const Photo = () => {
         console.log(err)
       }
     }
+  }
+
+  const getImageRefToDelete = () => {
+    // Get the resized img size (lg)
+    let lgSize;
+    switch(origImageOrientation) {
+      case IMG_PORTRAIT:
+        lgSize = IMG_SIZE_PORTRAIT;
+        break;
+      case IMG_LANDSCAPE:
+        lgSize = IMG_SIZE_LANDSCAPE;
+        break;
+      case IMG_PANORAMA:
+        lgSize = IMG_SIZE_PANORAMA;
+        break;
+    }
+
+    // Get paths
+    const baseImagePath = `photos/${auth.currentUser.uid}/${origImageOrientation}`;
+    const originalPath = `${baseImagePath}/${photoRef}`;
+    const thumbsPath = `${baseImagePath}/${IMG_THUMB_S}/${photoRef}_${IMG_SIZE_THUMB_S}`;
+    const thumblPath = `${baseImagePath}/${IMG_THUMB_L}/${photoRef}_${IMG_SIZE_THUMB_L}`;
+    const lgPath = `${baseImagePath}/${IMG_LARGE}/${photoRef}_${lgSize}`;
+
+    // Return refs
+    return [
+      ref(storage, originalPath),
+      ref(storage, thumbsPath),
+      ref(storage, thumblPath),
+      ref(storage, lgPath)
+    ]
   }
 
   const onCancelClick = () => {
@@ -359,6 +444,7 @@ const Photo = () => {
                       Choose Original
                     </button>
                     <p className="form-err form-err_photo form-err_img">{imageErr ?? imageErr}</p>
+                    {imageOrientation}
                   </div>
                 </div>
                 <div className="photo-form_info-container">
