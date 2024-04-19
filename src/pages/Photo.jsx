@@ -71,13 +71,13 @@ const Photo = () => {
 
   useEffect(()=> {
     if (infoFetched.current === false) {
-      setLoading(true);
       fetchPhoto();
       infoFetched.current = true;
     }
   }, []);
 
   const fetchPhoto = async () => {
+    setLoading(true);
     const photoRef = doc(db, 'photos', params.id);
 
     // Execute query
@@ -92,11 +92,11 @@ const Photo = () => {
         case IMG_PORTRAIT:
           imageSize = IMG_SIZE_PORTRAIT;
           break;
-        case IMG_LANDSCAPE:
+          case IMG_PANORAMA:
+            imageSize = IMG_SIZE_PANORAMA;
+            break;
+        default:
           imageSize = IMG_SIZE_LANDSCAPE;
-          break;
-        case IMG_PANORAMA:
-          imageSize = IMG_SIZE_PANORAMA;
           break;
       }
 
@@ -274,7 +274,8 @@ const Photo = () => {
     if (changeImage) {
       // Create File reference
       const photoId = v4();
-      const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${imageOrientation}/${photoId}`);
+      const baseImageUrl = `photos/${auth.currentUser.uid}/${imageOrientation}`;
+      const imageRef = ref(storage, `${baseImageUrl}/${photoId}`);
 
       // Upload photo to firebase storage
       uploadBytes(imageRef, photoToUpload)
@@ -299,37 +300,78 @@ const Photo = () => {
             orientation: imageOrientation,
             photoRef: photoId
           }
-          try {
-            const photoRef = doc(db, 'photos', params.id);
-            updateDoc(photoRef, formDataCopy);
-            toast.success('Data stored successfully');
-          } catch (err) {
-            toast.error('Failed to store data');
-            console.log(err);
-          } finally {
-            fetchPhoto();
-            setEditing(false);
-            setLoading(false);
-          }
-        })
-        .catch ((err) => {
-          toast.error('Failed to upload photo');
-          console.log(err);
-          setLoading(false);
-        })
+
+          const photoRef = doc(db, 'photos', params.id);
+
+          updateDoc(photoRef, formDataCopy)
+            .then(() => {
+              // Wait until new image URL to be ready
+              // Prepare for resized image URL check
+              let lgSize;
+              switch(imageOrientation) {
+                case IMG_PORTRAIT:
+                  lgSize = IMG_SIZE_PORTRAIT;
+                  break;
+                  case IMG_PANORAMA:
+                    lgSize = IMG_SIZE_PANORAMA;
+                  break;
+                default:
+                  lgSize = IMG_SIZE_LANDSCAPE;
+                  break;
+              }
+
+              const resizedImagePath = `${baseImageUrl}/lg/${photoId}_${lgSize}`;
+
+              // Wait for resized image URL
+              const getUrlPromise = new Promise ((res, rej) => {
+                const resizedImageRef = ref(storage, resizedImagePath);
+
+                // Keep checking url until it is ready
+                const intervalId = setInterval(async () => {
+                  const url = await getDownloadURL(resizedImageRef);
+                  if (url) {
+                    clearInterval(intervalId);
+                    res('Resized image url is ready');
+                  }
+                }, 1000);
+              })
+
+              getUrlPromise
+                .then((msg) => {
+                  fetchPhoto();
+                  setEditing(false);
+                  toast.success('Data stored successfully');
+                  console.log(msg);
+                })
+                .catch((msg) => {
+                  toast.error('Error while getting new photo URL');
+                  setLoading(false);
+                  console.log(msg);
+                })
+              })
+            })
+            .catch((err) => {
+              toast.error('Failed to store data');
+              console.log(err);
+              setLoading(false);
+            });
     } else {
       try {
         // Update database
         const photoRef = doc(db, 'photos', params.id);
-        updateDoc(photoRef, formDataCopy);
-        toast.success('Data stored successfully');
+        updateDoc(photoRef, formDataCopy)
+          .then(() => {
+            fetchPhoto();
+          })
+          .then(() => {
+            setEditing(false);
+            setLoading(false);
+            toast.success('Data stored successfully');
+          })
       } catch (err) {
         toast.error('Failed to store data');
-        console.log(err);
-      } finally {
-        fetchPhoto();
-        setEditing(false);
         setLoading(false);
+        console.log(err);
       }
     }
   }
@@ -372,11 +414,11 @@ const Photo = () => {
       case IMG_PORTRAIT:
         lgSize = IMG_SIZE_PORTRAIT;
         break;
-      case IMG_LANDSCAPE:
-        lgSize = IMG_SIZE_LANDSCAPE;
-        break;
       case IMG_PANORAMA:
         lgSize = IMG_SIZE_PANORAMA;
+        break;
+      default:
+        lgSize = IMG_SIZE_LANDSCAPE;
         break;
     }
 

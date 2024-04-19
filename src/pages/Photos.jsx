@@ -61,15 +61,20 @@ const Photos = () => {
           // Get photo URL
           const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${IMG_SIZE_THUMB_L}`);
 
-          getDownloadURL(photoRef).then((url) => {
-            fetchedPhotoInfo = [...fetchedPhotoInfo, {
-              id: doc.id,
-              data: doc.data(),
-              photoURL: url,
-            }]
+          getDownloadURL(photoRef)
+            .then((url) => {
+              fetchedPhotoInfo = [...fetchedPhotoInfo, {
+                id: doc.id,
+                data: doc.data(),
+                photoURL: url,
+              }]
 
-            setPhotoInfoList(fetchedPhotoInfo);
-          })
+              setPhotoInfoList(fetchedPhotoInfo);
+            })
+            .catch(err => {
+              console.log(err)
+            })
+
         })
       } else {
         setPhotoInfoList([]);

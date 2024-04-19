@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db, storage } from "../firebase.config";
 import { getAuth } from 'firebase/auth';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 import { toast } from 'react-toastify';
 import Header from "../components/Header";
@@ -13,7 +13,10 @@ import { MdOutlineDateRange } from "react-icons/md";
 import {
   IMG_PORTRAIT,
   IMG_LANDSCAPE,
-  IMG_PANORAMA
+  IMG_PANORAMA,
+  IMG_SIZE_PORTRAIT,
+  IMG_SIZE_LANDSCAPE,
+  IMG_SIZE_PANORAMA
 } from '../constants.js';
 
 const AddPhoto = () => {
@@ -162,28 +165,65 @@ const AddPhoto = () => {
 
     // Create File reference
     const photoId = v4();
-    const imageRef = ref(storage, `photos/${auth.currentUser.uid}/${imageOrientation}/${photoId}`);
+    const baseImageUrl = `photos/${auth.currentUser.uid}/${imageOrientation}`;
+    const imageRef = ref(storage, `${baseImageUrl}/${photoId}`);
 
     // Upload photo to firebase storage
     uploadBytes(imageRef, photoToUpload)
-      .then(() => {
-        try {
-          // Update database
-          formDataCopy.photoRef = photoId;
-          addDoc(collection(db, 'photos'), formDataCopy);
-          toast.success('Data stored successfully');
-          navigate('/photos');
-        } catch (err) {
-          console.log(err);
-          toast.error('Failed to store data');
+      .then(async() => {
+        // Update database
+        formDataCopy.photoRef = photoId;
+        const newDoc = await addDoc(collection(db, 'photos'), formDataCopy);
+
+        // Prepare for resized image URL check
+        let lgSize;
+        switch(imageOrientation) {
+          case IMG_PORTRAIT:
+            lgSize = IMG_SIZE_PORTRAIT;
+            break;
+            case IMG_PANORAMA:
+              lgSize = IMG_SIZE_PANORAMA;
+            break;
+          default:
+            lgSize = IMG_SIZE_LANDSCAPE;
+            break;
         }
+
+        const resizedImagePath = `${baseImageUrl}/lg/${photoId}_${lgSize}`;
+
+        // Wait for resized image URL is ready
+        const getUrlPromise = new Promise ((res, rej) => {
+          const resizedImageRef = ref(storage, resizedImagePath);
+
+          // Keep checking url until it is ready
+          const intervalId = setInterval(async () => {
+            const url = await getDownloadURL(resizedImageRef);
+            if (url) {
+              clearInterval(intervalId);
+              res('Resized image url is ready');
+            }
+          }, 1000);
+        })
+
+        getUrlPromise
+          .then((msg) => {
+            // Redirect to individual photo page once resized img url is ready
+            navigate(`/photos/view/${newDoc.id}`);
+            toast.success('Data stored successfully');
+            console.log(msg);
+          })
+          .catch((msg) => {
+            toast.error('Error while getting new photo URL')
+            console.log(msg)
+          })
+          .finally(() => {
+            setLoading(false);
+          })
       })
       .catch ((err) => {
         toast.error('Failed to upload photo');
-        console.log(err);
-      })
-      .finally(() => {
         setLoading(false);
+        console.log(err);
       })
   }
 
