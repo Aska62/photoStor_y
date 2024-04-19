@@ -486,7 +486,6 @@ const Photo = () => {
                       Choose Original
                     </button>
                     <p className="form-err form-err_photo form-err_img">{imageErr ?? imageErr}</p>
-                    {imageOrientation}
                   </div>
                 </div>
                 <div className="photo-form_info-container">
