@@ -14,9 +14,11 @@ import {
   IMG_PORTRAIT,
   IMG_LANDSCAPE,
   IMG_PANORAMA,
+  IMG_SQUARE,
   IMG_SIZE_PORTRAIT,
   IMG_SIZE_LANDSCAPE,
-  IMG_SIZE_PANORAMA
+  IMG_SIZE_PANORAMA,
+  IMG_SIZE_SQUARE
 } from '../constants.js';
 
 const AddPhoto = () => {
@@ -27,7 +29,7 @@ const AddPhoto = () => {
   const [loading, setLoading] = useState(false);
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
-  const [imageOrientation, setImageOrientation] = useState('');
+  const [imageOrientation, setImageOrientation] = useState(IMG_LANDSCAPE);
   const [hidePhoto, setHidePhoto] = useState(false);
   const [titleErr, setTitleErr] = useState('');
   const [dateErr, setDateErr] = useState('');
@@ -48,7 +50,7 @@ const AddPhoto = () => {
     date,
     location,
     categoryRef,
-    note,
+    note
   } = formData;
 
   const onFileSelect = (e) => {
@@ -60,22 +62,6 @@ const AddPhoto = () => {
       // Set data for preview
       reader.onload = (e) => {
         setImagePreviewData(e.target.result);
-        const img = new Image();
-        img.onload = function() {
-          // Get the dimensions of the image
-          const width = img.width;
-          const height = img.height;
-
-          // Set image orientation necessary for resize
-          if (width > height * 1.8) {
-            setImageOrientation(IMG_PANORAMA);
-          } else if (width > height) {
-            setImageOrientation(IMG_LANDSCAPE);
-          } else {
-            setImageOrientation(IMG_PORTRAIT);
-          }
-        }
-        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
 
@@ -256,6 +242,53 @@ const AddPhoto = () => {
                   onChange={(e) => onFileSelect(e)}
                 />
                 <p className="form-err form-err_photo form-err_img form-err_img_add">{imageErr ?? imageErr}</p>
+                <div className="radio-container raido-container_add-photo">
+                  <p className="radio-title radio-title_add-photo">Orientation:</p>
+                  <label htmlFor="orientation" className="radio-label">
+                    <input
+                      type="radio"
+                      name='orientation'
+                      value={IMG_LANDSCAPE}
+                      className="radio"
+                      checked={imageOrientation === IMG_LANDSCAPE}
+                      onChange={() => setImageOrientation(IMG_LANDSCAPE)}
+                    />
+                    Landscape
+                  </label>
+                  <label htmlFor="orientation" className="radio-label">
+                    <input
+                      type="radio"
+                      name='orientation'
+                      value={IMG_PORTRAIT}
+                      className="radio"
+                      checked={imageOrientation === IMG_PORTRAIT}
+                      onChange={() =>  setImageOrientation(IMG_PORTRAIT)}
+                    />
+                    Portrait
+                  </label>
+                  <label htmlFor="orientation" className="radio-label">
+                    <input
+                      type="radio"
+                      name='orientation'
+                      value={IMG_PANORAMA}
+                      className="radio"
+                      checked={imageOrientation === IMG_PANORAMA}
+                      onChange={() => setImageOrientation(IMG_PANORAMA)}
+                    />
+                    Panorama
+                  </label>
+                  <label htmlFor="orientation" className="radio-label">
+                    <input
+                      type="radio"
+                      name='orientation'
+                      value={IMG_SQUARE}
+                      className="radio"
+                      checked={imageOrientation === IMG_SQUARE}
+                      onChange={() => setImageOrientation(IMG_SQUARE)}
+                    />
+                    Square
+                  </label>
+                </div>
               </div>
               <ul className="photo-form_info-container">
                 <li className="photo-info_input-box">
