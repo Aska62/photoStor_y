@@ -286,7 +286,8 @@ const Photo = () => {
           formDataCopy = {
             ...formDataCopy,
             orientation: imageOrientation,
-            photoRef: photoId
+            photoRef: photoId,
+            updatedAt: Timestamp.now()
           }
 
           const photoRef = doc(db, 'photos', params.id);
@@ -331,11 +332,14 @@ const Photo = () => {
                 .then((msg) => {
                   fetchPhoto();
                   setEditing(false);
+                  setChangeImage(false);
                   toast.success('Data stored successfully');
                   console.log(msg);
                 })
                 .catch((msg) => {
                   toast.error('Error while getting new photo URL');
+                  setEditing(false);
+                  setChangeImage(false);
                   setLoading(false);
                   console.log(msg);
                 })
@@ -408,6 +412,9 @@ const Photo = () => {
       case IMG_PANORAMA:
         lgSize = IMG_SIZE_PANORAMA;
         break;
+      case IMG_SQUARE:
+        lgSize = IMG_SIZE_SQUARE;
+        break;
       default:
         lgSize = IMG_SIZE_LANDSCAPE;
         break;
@@ -437,6 +444,11 @@ const Photo = () => {
       setLocationErr('');
       setCategoryErr('');
       setNoteErr('');
+
+      // Set image as original
+      setImagePreviewData(originalPhotoURL);
+      setImageOrientation(origImageOrientation);
+      setChangeImage(false);
 
       // Set form data back to original
       setFormData({ ...photoInfo });
