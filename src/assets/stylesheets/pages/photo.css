@@ -44,7 +44,6 @@
   margin: 2rem auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .photo-info_hidden {
@@ -107,8 +106,8 @@
   background-color: #e38a6f;
   color: var(--root-color-white);
   position: absolute;
-  top: 1.2rem;
-  right: 0;
+  top: -3px;
+  left: 0;
 }
 .form-err_photo {
   position: absolute;

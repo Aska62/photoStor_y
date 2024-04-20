@@ -15,12 +15,14 @@ import {
   IMG_PORTRAIT,
   IMG_LANDSCAPE,
   IMG_PANORAMA,
+  IMG_SQUARE,
   IMG_LARGE,
   IMG_THUMB_S,
   IMG_THUMB_L,
   IMG_SIZE_PORTRAIT,
   IMG_SIZE_LANDSCAPE,
   IMG_SIZE_PANORAMA,
+  IMG_SIZE_SQUARE,
   IMG_SIZE_THUMB_S,
   IMG_SIZE_THUMB_L,
 } from '../constants.js';
@@ -92,9 +94,12 @@ const Photo = () => {
         case IMG_PORTRAIT:
           imageSize = IMG_SIZE_PORTRAIT;
           break;
-          case IMG_PANORAMA:
-            imageSize = IMG_SIZE_PANORAMA;
-            break;
+        case IMG_PANORAMA:
+          imageSize = IMG_SIZE_PANORAMA;
+          break;
+        case IMG_SQUARE:
+          imageSize = IMG_SIZE_SQUARE;
+          break;
         default:
           imageSize = IMG_SIZE_LANDSCAPE;
           break;
@@ -175,23 +180,6 @@ const Photo = () => {
       // Set data for preview
       reader.onload = (e) => {
         setImagePreviewData(e.target.result);
-        // console.log(e.target.result)
-        const img = new Image();
-        img.onload = function() {
-          // Get the dimensions of the image
-          const width = img.width;
-          const height = img.height;
-
-          // Set image orientation necessary for resize
-          if (width > height * 1.8) {
-            setImageOrientation(IMG_PANORAMA);
-          } else if (width > height) {
-            setImageOrientation(IMG_LANDSCAPE);
-          } else {
-            setImageOrientation(IMG_PORTRAIT);
-          }
-        }
-        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
 
@@ -298,7 +286,8 @@ const Photo = () => {
           formDataCopy = {
             ...formDataCopy,
             orientation: imageOrientation,
-            photoRef: photoId
+            photoRef: photoId,
+            updatedAt: Timestamp.now()
           }
 
           const photoRef = doc(db, 'photos', params.id);
@@ -312,8 +301,11 @@ const Photo = () => {
                 case IMG_PORTRAIT:
                   lgSize = IMG_SIZE_PORTRAIT;
                   break;
-                  case IMG_PANORAMA:
-                    lgSize = IMG_SIZE_PANORAMA;
+                case IMG_PANORAMA:
+                  lgSize = IMG_SIZE_PANORAMA;
+                  break;
+                case IMG_SQUARE:
+                  lgSize = IMG_SIZE_SQUARE;
                   break;
                 default:
                   lgSize = IMG_SIZE_LANDSCAPE;
@@ -340,11 +332,14 @@ const Photo = () => {
                 .then((msg) => {
                   fetchPhoto();
                   setEditing(false);
+                  setChangeImage(false);
                   toast.success('Data stored successfully');
                   console.log(msg);
                 })
                 .catch((msg) => {
                   toast.error('Error while getting new photo URL');
+                  setEditing(false);
+                  setChangeImage(false);
                   setLoading(false);
                   console.log(msg);
                 })
@@ -417,6 +412,9 @@ const Photo = () => {
       case IMG_PANORAMA:
         lgSize = IMG_SIZE_PANORAMA;
         break;
+      case IMG_SQUARE:
+        lgSize = IMG_SIZE_SQUARE;
+        break;
       default:
         lgSize = IMG_SIZE_LANDSCAPE;
         break;
@@ -447,6 +445,11 @@ const Photo = () => {
       setCategoryErr('');
       setNoteErr('');
 
+      // Set image as original
+      setImagePreviewData(originalPhotoURL);
+      setImageOrientation(origImageOrientation);
+      setChangeImage(false);
+
       // Set form data back to original
       setFormData({ ...photoInfo });
 
@@ -465,7 +468,7 @@ const Photo = () => {
               <div className="photo-form_main">
                 <div className="photo-form_image-container">
                   <img
-                    className='photo-for-view'
+                    className={`photo-for-view ${imageOrientation ? 'photo-preview_'+imageOrientation : ''}`}
                     src={imagePreviewData}
                     alt='preview'
                   />
@@ -486,6 +489,57 @@ const Photo = () => {
                       Choose Original
                     </button>
                     <p className="form-err form-err_photo form-err_img">{imageErr ?? imageErr}</p>
+                  </div>
+                  <div className={`radio-container ${editing ? '' : 'hidden'}`}>
+                    <p className="radio-title radio-title_add-photo">Orientation:</p>
+                    <label htmlFor="orientation" className="radio-label">
+                      <input
+                        type="radio"
+                        name='orientation'
+                        value={IMG_LANDSCAPE}
+                        className="radio"
+                        checked={imageOrientation === IMG_LANDSCAPE}
+                        onChange={() => setImageOrientation(IMG_LANDSCAPE)}
+                        disabled={!changeImage}
+                      />
+                      Landscape
+                    </label>
+                    <label htmlFor="orientation" className="radio-label">
+                      <input
+                        type="radio"
+                        name='orientation'
+                        value={IMG_PORTRAIT}
+                        className="radio"
+                        checked={imageOrientation === IMG_PORTRAIT}
+                        onChange={() =>  setImageOrientation(IMG_PORTRAIT)}
+                        disabled={!changeImage}
+                      />
+                      Portrait
+                    </label>
+                    <label htmlFor="orientation" className="radio-label">
+                      <input
+                        type="radio"
+                        name='orientation'
+                        value={IMG_PANORAMA}
+                        className="radio"
+                        checked={imageOrientation === IMG_PANORAMA}
+                        onChange={() => setImageOrientation(IMG_PANORAMA)}
+                        disabled={!changeImage}
+                      />
+                      Panorama
+                    </label>
+                    <label htmlFor="orientation" className="radio-label">
+                      <input
+                        type="radio"
+                        name='orientation'
+                        value={IMG_SQUARE}
+                        className="radio"
+                        checked={imageOrientation === IMG_SQUARE}
+                        onChange={() => setImageOrientation(IMG_SQUARE)}
+                        disabled={!changeImage}
+                      />
+                      Square
+                    </label>
                   </div>
                 </div>
                 <div className="photo-form_info-container">

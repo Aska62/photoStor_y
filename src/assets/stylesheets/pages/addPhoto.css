@@ -3,6 +3,7 @@
   width: 100vw;
   height: 100vh;
 }
+
 .photo-form_image-container {
   min-height: 200px;
   box-shadow: none;
@@ -18,6 +19,7 @@
   margin: 0 auto 1rem auto;
   padding: 0;
   background-color: rgba(35, 35, 35, .4);
+  object-fit: cover;
 }
 .photo-preview_portrait {
   max-width: unset;
@@ -36,6 +38,33 @@
   max-height: unset;
   width: 1080px;
   height: 600px;
+}
+.photo-preview_square {
+  max-width: unset;
+  max-height: unset;
+  width: 720px;
+  height: 720px;
+}
+.radio-container {
+  width: 100%;
+  height: 2rem;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  margin: 0;
+}
+.radio-title {
+  margin: 0 1rem 0 3rem;
+  font-size: 1rem;
+}
+.radio-label {
+  width: max-content;
+  margin: 0 1em 0 0;
+}
+.radio {
+  margin-right: 5px;
 }
 
 .photo-input {
