@@ -3,8 +3,9 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL, PROFILE_PAGE_URL } from '../constants.js';
 import { IoLogOutOutline } from "react-icons/io5";
+import Menu from "./Menu";
 
-const Header = () => {
+const Header = ({detectMobMenuOpen}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = getAuth();
@@ -16,17 +17,25 @@ const Header = () => {
     navigate('/login');
   }
 
+  const onHamburgerClick = () => {
+    setHamburgerOpen(!hamburgerOpen);
+    detectMobMenuOpen(!hamburgerOpen);
+  }
+
   return (
     <header >
-      <Link to={HOME_PAGE_URL} className="link">
+      <Link to={HOME_PAGE_URL} className="link link-header">
         <h1 className="header-app-title">PhotoStory</h1>
       </Link>
-      <div className="hamburger-container" onClick={()=>setHamburgerOpen(!hamburgerOpen)}>
+      <div
+        className="hamburger-container"
+        onClick={onHamburgerClick}
+      >
         <div className={`hamburger-line hamburger-line_top ${hamburgerOpen ? 'hamburger-line_top_open' : ''}`}></div>
         <div className={`hamburger-line hamburger-line_middle ${hamburgerOpen ? 'hamburger-line_middle_open' : ''}`}></div>
         <div className={`hamburger-line hamburger-line_bottom ${hamburgerOpen ? 'hamburger-line_bottom_open' : ''}`}></div>
       </div>
-      <nav className="navbar">
+      <nav className='navbar'>
         <Link
           to={HOME_PAGE_URL}
           className={`nav-item ${location.pathname === HOME_PAGE_URL ? 'nav-item_current' : ''}`}
@@ -53,6 +62,7 @@ const Header = () => {
         </Link>
         <IoLogOutOutline className="nav-item nav-item_logout" onClick={onLogout} />
       </nav>
+      <Menu onLogout={onLogout} onMenuClick={onHamburgerClick} hamburgerOpen={hamburgerOpen} />
     </header>
   )
 }

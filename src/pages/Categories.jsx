@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { MdOutlineCancel } from "react-icons/md";
 import Header from "../components/Header";
 
-const Categories = () => {
+const Categories = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
 
   const [loading, setLoading] = useState(true);
@@ -270,8 +270,8 @@ const Categories = () => {
 
   return (
     <>
-      <Header />
-      <main className={`main main_categories ${addingNew ? 'no-scroll' : ''}`}>
+      <Header detectMobMenuOpen={detectMobMenuOpen} />
+      <main className={`main main_categories ${addingNew ? 'no-scroll' : ''} ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="page-title">Categories</h2>
         {loading ? <p>Loading...</p> : <>
           <section className="categ-container">

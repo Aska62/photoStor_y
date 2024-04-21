@@ -27,7 +27,7 @@ import {
   IMG_SIZE_THUMB_L,
 } from '../constants.js';
 
-const Photo = () => {
+const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
   const navigate = useNavigate();
   const params = useParams();
@@ -459,8 +459,8 @@ const Photo = () => {
 
   return (
     <>
-      <Header />
-      <main className="main main_photo">
+      <Header detectMobMenuOpen={detectMobMenuOpen} />
+      <main className={`main main_photo ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="page-title">Photo</h2>
         {loading ? <p>Loading...</p> : <>
           <form className="photo-form-container">

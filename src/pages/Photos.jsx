@@ -11,7 +11,7 @@ import { PHOTOS_PAGE_URL, IMG_SIZE_THUMB_L, IMG_THUMB_L } from '../constants.js'
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption.jsx";
 
-const Photos = () => {
+const Photos = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
   const photosFetched = useRef(false);
   const categFetched = useRef(false);
@@ -97,8 +97,8 @@ const Photos = () => {
 
   return (
     <>
-      <Header />
-      <main className="main main_photos">
+      <Header detectMobMenuOpen={detectMobMenuOpen} />
+      <main className={`main main_photos ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="page-title">Photos</h2>
         <div className="photo-list_heading-box">
           <Link

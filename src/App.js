@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
@@ -11,23 +12,29 @@ import Categories from './pages/Categories';
 import Profile from './pages/Profile';
 
 function App() {
+  const [isMobMenuOpen, setIsMobMenuOpen] = useState(false);
+
+  const detectMobMenuOpen = (isMenuOpen) => {
+    setIsMobMenuOpen(isMenuOpen);
+  }
+
   return (
     <Router>
       <Routes >
         <Route path='/login' element={<Login />} />
         <Route path='/' element={<PrivateRoute />} >
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
         </Route>
         <Route path='/photos' element={<PrivateRoute />} >
-          <Route path='/photos' element={<Photos />} />
-          <Route path='/photos/view/:id' element={<Photo />} />
-          <Route path='/photos/add' element={<AddPhoto />} />
+          <Route path='/photos' element={<Photos detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
+          <Route path='/photos/view/:id' element={<Photo detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
+          <Route path='/photos/add' element={<AddPhoto detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen}/>} />
         </Route>
         <Route path='/categories' element={<PrivateRoute />} >
-          <Route path='/categories' element={<Categories />} />
+          <Route path='/categories' element={<Categories detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
         </Route>
         <Route path='/profile' element={<PrivateRoute />} >
-          <Route path='/profile' element={<Profile />} />
+          <Route path='/profile' element={<Profile detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
         </Route>
       </Routes>
       <ToastContainer />

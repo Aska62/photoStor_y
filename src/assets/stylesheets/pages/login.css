@@ -3,18 +3,25 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 }
 .main-title_top_login {
-  margin: unset;
-  margin-left: 3rem;
+  height: 7rem;
   align-self: flex-start;
+  opacity: 60%;
+  margin: 0 auto 0 8%;
+  padding: 0;
+  color: var(--root-color-blue);
 }
 .main-title_bottom_login {
-  margin: unset;
-  margin-right: 3rem;
-  align-self: flex-end;
+  height: 7rem;
+  opacity: 60%;
+  margin: 0 8% 0 auto;
+  color: #248A8A;
+}
+.title-br {
+  display: none;
 }
 .login-box {
   text-align: center;
@@ -22,6 +29,8 @@
 .page-title_login {
   font-size: 1.5rem;
   margin: 0;
+  font-weight: 300;
+  line-height: 2;
 }
 
 .oauth {
@@ -29,4 +38,20 @@
 }
 .oauth:hover {
   cursor: pointer;
+}
+
+@media only screen and (max-width:490px) {
+  .main-title_top_login {
+    height: 16rem;
+    text-align: right;
+    opacity: 60%;
+  }
+  .main-title_bottom_login {
+    height: 16rem;
+    text-align: right;
+    opacity: 60%;
+  }
+  .title-br {
+    display: block;
+  }
 }

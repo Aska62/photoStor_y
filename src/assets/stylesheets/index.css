@@ -20,6 +20,11 @@ input:focus, select:focus {
 .main {
   z-index: 0;
 }
+.main_frozen {
+  position: fixed;
+  top: 3rem;
+  overflow-y: hidden;
+}
 .page-title {
   margin: 0 auto auto 2rem;
   font-weight: 300;

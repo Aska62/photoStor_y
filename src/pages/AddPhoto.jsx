@@ -21,7 +21,7 @@ import {
   IMG_SIZE_SQUARE
 } from '../constants.js';
 
-const AddPhoto = () => {
+const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
   const navigate = useNavigate();
   const categFetched = useRef(false);
@@ -167,8 +167,11 @@ const AddPhoto = () => {
           case IMG_PORTRAIT:
             lgSize = IMG_SIZE_PORTRAIT;
             break;
-            case IMG_PANORAMA:
-              lgSize = IMG_SIZE_PANORAMA;
+          case IMG_PANORAMA:
+            lgSize = IMG_SIZE_PANORAMA;
+            break;
+          case IMG_SQUARE:
+            lgSize = IMG_SIZE_SQUARE;
             break;
           default:
             lgSize = IMG_SIZE_LANDSCAPE;
@@ -222,8 +225,8 @@ const AddPhoto = () => {
 
   return (
     <>
-      <Header />
-      <main className="main main_photo">
+      <Header detectMobMenuOpen={detectMobMenuOpen} />
+      <main className={`main main_photo ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         {loading ? <p>Loading...</p> : <>
           <form className="photo-form-container">
             <div className="photo-form_main">

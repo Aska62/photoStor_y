@@ -6,7 +6,7 @@ import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 import Header from "../components/Header";
 
-const Profile = () => {
+const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
   const navigate = useNavigate();
   const profFetched = useRef(false);
@@ -130,8 +130,8 @@ const Profile = () => {
 
   return (
     <>
-      <Header />
-      <main className="main main_profile">
+      <Header detectMobMenuOpen={detectMobMenuOpen} />
+      <main className={`main main_profile ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="main-title main-title_top">Profile</h2>
         <div className="main-image main-image_profile">
           <div className="main-image-cover main-image-cover_profile">
