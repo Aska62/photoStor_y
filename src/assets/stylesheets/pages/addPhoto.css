@@ -92,3 +92,47 @@
   text-align: left;
   margin-top: 2px;
 }
+
+@media only screen and (max-width:490px) {
+  .photo-for-view {
+    max-height: 300px;
+  }
+  .photo-preview_portrait {
+    max-width: unset;
+    max-height: unset;
+    width: 300px;
+    height: 450px;
+  }
+  .photo-preview_landscape {
+    max-width: unset;
+    max-height: unset;
+    width: 360px;
+    height: 240px;
+  }
+  .photo-preview_panorama {
+    max-width: unset;
+    max-height: unset;
+    width: 360px;
+    height: 120px;
+  }
+  .photo-preview_square {
+    max-width: unset;
+    max-height: unset;
+    width: 340px;
+    height: 340px;
+  }
+
+  .radio-container {
+    width: 86%;
+    margin: 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    height: fit-content;
+  }
+  .radio-title {
+    margin: 0;
+  }
+  .radio-label {
+    margin: 0 0 0 1rem;
+  }
+}

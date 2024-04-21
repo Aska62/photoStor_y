@@ -119,3 +119,19 @@
   right: unset;
   left: 0;
 }
+
+@media only screen and (max-width:490px) {
+  .photo-form_main {
+    margin-bottom: 0;
+  }
+  .photo-form-container {
+    padding: 0;
+  }
+  .image-edit-box {
+    height: fit-content;
+    flex-direction: column;
+  }
+  .btn_photo-cancel {
+    margin-top: 5px;
+  }
+}

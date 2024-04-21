@@ -18,7 +18,9 @@ input:focus, select:focus {
   outline: none;
 }
 .main {
+  width: 100vw;
   z-index: 0;
+  overflow-x: hidden;
 }
 .main_frozen {
   position: fixed;
@@ -115,6 +117,15 @@ input:focus, select:focus {
   border: 1px solid #e85548;
   border-radius: 3px;
   line-height: 1.15;
+}
+
+@media only screen and (max-width:490px) {
+  .main {
+    margin-top: 3rem;
+  }
+  .main-image {
+    min-height: 300px;
+  }
 }
 
 @import url('./components/header.css');

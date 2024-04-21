@@ -23,7 +23,7 @@ const Header = ({detectMobMenuOpen}) => {
   }
 
   return (
-    <header >
+    <header className={hamburgerOpen ? 'header_menu-open' : ''}>
       <Link to={HOME_PAGE_URL} className="link link-header">
         <h1 className="header-app-title">PhotoStory</h1>
       </Link>

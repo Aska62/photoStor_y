@@ -19,18 +19,16 @@
   z-index: 2;
 }
 .main-title {
-  margin: 0;
   font-size: 7rem;
   font-weight: 300;
   font-style: italic;
   width: fit-content;
-  height: 7rem;
 }
-.main-title_top {
+.main-title_top_home {
   margin: auto auto 2rem 3rem;
   color: var(--root-color-blue);
 }
-.main-title_bottom {
+.main-title_bottom_home {
   margin: 2rem 3rem auto auto;
   color: #248A8A;
 }

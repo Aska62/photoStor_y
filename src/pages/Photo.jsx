@@ -472,7 +472,7 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     src={imagePreviewData}
                     alt='preview'
                   />
-                  <div className="image-edit-box">
+                  <div className={`image-edit-box ${editing ? '' : 'hidden' }`}>
                     <input
                       type='file'
                       accept="image/png, image/jpeg"
