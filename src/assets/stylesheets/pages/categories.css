@@ -60,6 +60,7 @@
 }
 .category-input {
   background-color: var(--root-color-white);
+  color: var(--root-color-black);
   border: none;
   width: 90%;
   max-width: 300px;

@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 firebase.config.js
+.firebase/
+.firebaserc
+firebase.json

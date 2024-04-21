@@ -17,6 +17,10 @@ ul {
 input:focus, select:focus {
   outline: none;
 }
+input:disabled {
+  opacity: 1;
+  color: var(--root-color-black);
+}
 .main {
   width: 100vw;
   z-index: 0;
