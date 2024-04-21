@@ -17,7 +17,7 @@ ul {
 input:focus, select:focus {
   outline: none;
 }
-input:disabled {
+input:disabled, textarea:disabled {
   opacity: 1;
   color: var(--root-color-black);
 }
