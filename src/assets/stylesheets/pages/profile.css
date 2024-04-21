@@ -8,6 +8,14 @@
   flex-direction: column;
   justify-content: space-around;
 }
+.main-title_top_profile {
+  margin: auto auto 2rem 3rem;
+  color: var(--root-color-blue);
+}
+.main-title_bottom_profile {
+  margin: 2rem 3rem auto auto;
+  color: #248A8A;
+}
 .main-image_profile {
   background-image: url('../../images/prof.png');
 }
@@ -67,4 +75,10 @@
   max-width: 400px;
   text-align: right;
   margin: 0 auto 1px auto;
+}
+
+.btn_edit_profile {
+  position: absolute;
+  top: 0;
+  right: 1rem;
 }

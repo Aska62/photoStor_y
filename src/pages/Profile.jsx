@@ -132,7 +132,7 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     <>
       <Header detectMobMenuOpen={detectMobMenuOpen} />
       <main className={`main main_profile ${isMobMenuOpen ? 'main_frozen' : ''}`}>
-        <h2 className="main-title main-title_top">Profile</h2>
+        <h2 className="main-title main-title_top_profile">Profile</h2>
         <div className="main-image main-image_profile">
           <div className="main-image-cover main-image-cover_profile">
           </div>
@@ -179,7 +179,7 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
               <p className="form-err form-err_profile">{emailErr ?? emailErr}</p>
               <button
                 type='button'
-                className={`btn btn_edit-categories ${editing ? 'hidden' : ''}`}
+                className={`btn btn_edit_profile ${editing ? 'hidden' : ''}`}
                 onClick={() => setEditing(true)}
                 disabled={editing ? true : false}
               >
@@ -204,7 +204,7 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
             </>}
           </form>
         </div>
-        <p className="main-title main-title_bottom">Profile</p>
+        <p className="main-title main-title_bottom_profile">Profile</p>
       </main>
     </>
   )
