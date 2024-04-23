@@ -55,23 +55,23 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   }
 
   const onInputChange = (e) => {
-    if (['userName', 'email'].includes(e.target.id)) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [e.target.id]: e.target.value.trim()
-      }))
-    } else {
-      setFormData((prevState) => ({
-        ...prevState,
-        [e.target.id]: e.target.value
-      }))
-    }
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value
+    }))
     setProfAltered(true)
   }
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    let formDataCopy = {
+      userName: formData.userName.trim(),
+      description: formData.description.trim(),
+      email: formData.email.trim(),
+      updatedAt: Timestamp.now()
+    }
 
     // validation
     let hasError = false;
@@ -80,18 +80,18 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     setDescErr('');
     setEmailErr('');
 
-    if (userName.length === 0) {
+    if (formDataCopy.userName.length === 0) {
       setUserNameErr('Please input user name');
       hasError = true;
     }
-    if (description.length === 0) {
+    if (formDataCopy.description.length === 0) {
       setDescErr('Please describe yourself');
       hasError = true;
     }
-    if (email.length === 0) {
+    if (formDataCopy.email.length === 0) {
       setEmailErr('Please input email address');
       hasError = true;
-    } else if(!email.match(emailRegex)) {
+    } else if(!formDataCopy.email.match(emailRegex)) {
       setEmailErr('Invalid email address');
       hasError = true;
     }
@@ -99,11 +99,6 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     if (hasError) {
       setLoading(false);
       return;
-    }
-
-    let formDataCopy = {
-      ...formData,
-      updatedAt: Timestamp.now()
     }
 
     try {
