@@ -55,10 +55,15 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   }
 
   const onInputChange = (e) => {
-    if (['userName', 'description', 'email'].includes(e.target.id)) {
+    if (['userName', 'email'].includes(e.target.id)) {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.id]: e.target.value.trim()
+      }))
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: e.target.value
       }))
     }
     setProfAltered(true)
