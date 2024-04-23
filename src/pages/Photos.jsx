@@ -7,7 +7,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase.config.js";
 import moment from "moment";
 import { toast } from 'react-toastify';
-import { PHOTOS_PAGE_URL, IMG_SIZE_THUMB_L, IMG_THUMB_L } from '../constants.js';
+import { PHOTOS_PAGE_URL, IMG_SIZE_THUMB_L, IMG_THUMB_L, OWNER_USER_ID } from '../constants.js';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption.jsx";
 
@@ -37,9 +37,17 @@ const Photos = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       // Create query
       let q = query(
         photoInfoRef,
-        where('userRef', '==', auth.currentUser.uid),
+        where('userRef', '==', OWNER_USER_ID),
         orderBy('date', 'asc'),
       );
+
+      // If user not signed in, don't show hidden photo data
+      if (!auth.currentUser) {
+        q = query(
+          q,
+          where('hide', '==', false)
+        )
+      }
 
       // Add categoryRef as a condition if category is selected
       if (categoryRef) {
@@ -57,7 +65,7 @@ const Photos = ({ detectMobMenuOpen, isMobMenuOpen }) => {
         // Alter to list
         querySnap.forEach((doc) => {
           // Image path
-          const imagePath = `photos/${auth.currentUser.uid}/${doc.data().orientation}/${IMG_THUMB_L}`;
+          const imagePath = `photos/${OWNER_USER_ID}/${doc.data().orientation}/${IMG_THUMB_L}`;
           // Get photo URL
           const photoRef = ref(storage, `${imagePath}/${doc.data().photoRef}_${IMG_SIZE_THUMB_L}`);
 
@@ -100,13 +108,15 @@ const Photos = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       <Header detectMobMenuOpen={detectMobMenuOpen} />
       <main className={`main main_photos ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="page-title">Photos</h2>
-        <div className="photo-list_heading-box">
-          <Link
-            className="btn link link-btn link-btn_add"
-            to={`${PHOTOS_PAGE_URL}/add`}
-          >
-            Add New
-          </Link>
+        <div className={`photo-list_heading-box ${auth.currentUser ? 'photo-list_heading-box_owner' : ''}`}>
+          {auth.currentUser && <>
+            <Link
+              className="btn link link-btn link-btn_add"
+              to={`${PHOTOS_PAGE_URL}/add`}
+            >
+              Add New
+            </Link>
+          </>}
           <div className="list-category-selector">
             <label>Category </label>
             <select

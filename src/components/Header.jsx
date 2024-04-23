@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getAuth } from 'firebase/auth';
-import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL, PROFILE_PAGE_URL } from '../constants.js';
+import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL, PROFILE_PAGE_URL, LOGIN_PAGE_URL } from '../constants.js';
 import { IoLogOutOutline } from "react-icons/io5";
 import Menu from "./Menu";
 
@@ -15,6 +16,7 @@ const Header = ({detectMobMenuOpen}) => {
   const onLogout = () => {
     auth.signOut();
     navigate('/login');
+    toast.success('Signed out');
   }
 
   const onHamburgerClick = () => {
@@ -48,21 +50,32 @@ const Header = ({detectMobMenuOpen}) => {
         >
           Photos
         </Link>
-        <Link
-          to={CATEGORIES_PAGE_URL}
-          className={`nav-item ${location.pathname === CATEGORIES_PAGE_URL ? 'nav-item_current' : ''}`}
-        >
-          Categories
-        </Link>
+        {auth.currentUser && <>
+          <Link
+            to={CATEGORIES_PAGE_URL}
+            className={`nav-item ${location.pathname === CATEGORIES_PAGE_URL ? 'nav-item_current' : ''}`}
+          >
+            Categories
+          </Link>
+        </>}
         <Link
           to={PROFILE_PAGE_URL}
           className={`nav-item ${location.pathname === PROFILE_PAGE_URL ? 'nav-item_current' : ''}`}
         >
           Profile
         </Link>
-        <IoLogOutOutline className="nav-item nav-item_logout" onClick={onLogout} />
+        {auth.currentUser ? <>
+          <IoLogOutOutline className="nav-item nav-item_logout" onClick={onLogout} />
+        </> : <>
+          <Link
+            to={LOGIN_PAGE_URL}
+            className={`nav-item ${location.pathname === LOGIN_PAGE_URL ? 'nav-item_current' : ''}`}
+          >
+            Login
+          </Link>
+        </>}
       </nav>
-      <Menu onLogout={onLogout} onMenuClick={onHamburgerClick} hamburgerOpen={hamburgerOpen} />
+        <Menu onLogout={onLogout} onMenuClick={onHamburgerClick} hamburgerOpen={hamburgerOpen} />
     </header>
   )
 }

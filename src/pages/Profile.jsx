@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 import Header from "../components/Header";
+import { OWNER_USER_ID } from '../constants.js';
 
 const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const auth = getAuth();
@@ -31,7 +32,7 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   } = formData;
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/
 
-  const userRef = doc(db, 'users', auth.currentUser.uid);
+  const userRef = doc(db, 'users', OWNER_USER_ID);
 
   useEffect(() => {
     if (profFetched.current === false) {
@@ -177,30 +178,32 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                 />
               </label>
               <p className="form-err form-err_profile">{emailErr ?? emailErr}</p>
-              <button
-                type='button'
-                className={`btn btn_edit_profile ${editing ? 'hidden' : ''}`}
-                onClick={() => setEditing(true)}
-                disabled={editing ? true : false}
-              >
-                Edit
-              </button>
-              <div className={`profile-btn_edit-box ${!editing ? 'hidden' : ''}`}>
+              {auth.currentUser && <>
                 <button
                   type='button'
-                  className="btn btn_save-profile"
-                  onClick={(e) => onSubmit(e)}
+                  className={`btn btn_edit_profile ${editing ? 'hidden' : ''}`}
+                  onClick={() => setEditing(true)}
+                  disabled={editing ? true : false}
                 >
-                  Save
+                  Edit
                 </button>
-                <button
-                  type='button'
-                  className='btn btn_cancel btn_cancel-profile'
-                  onClick={(e) => onEditCancel(e)}
-                >
-                  Cancel
-                </button>
-              </div>
+                <div className={`profile-btn_edit-box ${!editing ? 'hidden' : ''}`}>
+                  <button
+                    type='button'
+                    className="btn btn_save-profile"
+                    onClick={(e) => onSubmit(e)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type='button'
+                    className='btn btn_cancel btn_cancel-profile'
+                    onClick={(e) => onEditCancel(e)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>}
             </>}
           </form>
         </div>

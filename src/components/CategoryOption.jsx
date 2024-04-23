@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { getAuth } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from "../firebase.config";
+import { OWNER_USER_ID } from '../constants.js';
 
 const CategoryOption = ({ categFetched, defMessage }) => {
-  const auth = getAuth();
 
   const [categories, setCategories] = useState([]);
 
@@ -17,7 +16,7 @@ const CategoryOption = ({ categFetched, defMessage }) => {
         try {
           let q = query(
             categRef,
-            where('userRef', '==', auth.currentUser.uid)
+            where('userRef', '==', OWNER_USER_ID)
           )
 
           const querySnap = await getDocs(q);

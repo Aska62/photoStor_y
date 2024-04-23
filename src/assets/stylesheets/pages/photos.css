@@ -8,9 +8,12 @@
   width: 100%;
   padding-top: 2rem;
   display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.photo-list_heading-box_owner {
   flex-direction: row-reverse;
   justify-content: space-between;
-  align-items: baseline;
 }
 .list-category-selector {
   width: fit-content;

@@ -21,21 +21,17 @@ function App() {
   return (
     <Router>
       <Routes >
-        <Route path='/login' element={<Login />} />
-        <Route path='/' element={<PrivateRoute />} >
-          <Route path='/' element={<Home detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
-        </Route>
+        <Route path='/' element={<Home detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
+        <Route path='/login' element={<Login detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
+        <Route path='/photos' element={<Photos detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
+        <Route path='/photos/view/:id' element={<Photo detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
         <Route path='/photos' element={<PrivateRoute />} >
-          <Route path='/photos' element={<Photos detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
-          <Route path='/photos/view/:id' element={<Photo detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
           <Route path='/photos/add' element={<AddPhoto detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen}/>} />
         </Route>
         <Route path='/categories' element={<PrivateRoute />} >
           <Route path='/categories' element={<Categories detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
         </Route>
-        <Route path='/profile' element={<PrivateRoute />} >
-          <Route path='/profile' element={<Profile detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
-        </Route>
+        <Route path='/profile' element={<Profile detectMobMenuOpen={detectMobMenuOpen} isMobMenuOpen={isMobMenuOpen} />} />
       </Routes>
       <ToastContainer />
     </Router>

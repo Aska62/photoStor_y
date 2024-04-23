@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase.config';
@@ -7,7 +7,6 @@ import { FaGoogle } from "react-icons/fa";
 
 const OAuth = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const onGoogleClick = async () => {
     try {
@@ -41,7 +40,7 @@ const OAuth = () => {
 
   return (
     <div>
-      <p>Sign {location.pathname === '/sign-up' ? 'up' : 'in'} with </p>
+      <p>Sign in with </p>
       <FaGoogle onClick={onGoogleClick} className='oauth' />
     </div>
   )

@@ -25,6 +25,7 @@ import {
   IMG_SIZE_SQUARE,
   IMG_SIZE_THUMB_S,
   IMG_SIZE_THUMB_L,
+  OWNER_USER_ID
 } from '../constants.js';
 
 const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
@@ -106,7 +107,7 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       }
 
       // Get photo URL
-      const imagePath = `photos/${auth.currentUser.uid}/${docSnap.data().orientation}/lg/${docSnap.data().photoRef}_${imageSize}`;
+      const imagePath = `photos/${OWNER_USER_ID}/${docSnap.data().orientation}/lg/${docSnap.data().photoRef}_${imageSize}`;
       // Get ref
       const photoRef = ref(storage, imagePath);
 
@@ -255,14 +256,14 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     // Prepare data for update
     let formDataCopy = {
       ...formData,
-      userRef: auth.currentUser.uid,
+      userRef: OWNER_USER_ID,
       updatedAt: Timestamp.now(),
     }
 
     if (changeImage) {
       // Create File reference
       const photoId = v4();
-      const baseImageUrl = `photos/${auth.currentUser.uid}/${imageOrientation}`;
+      const baseImageUrl = `photos/${OWNER_USER_ID}/${imageOrientation}`;
       const imageRef = ref(storage, `${baseImageUrl}/${photoId}`);
 
       // Upload photo to firebase storage
@@ -421,7 +422,7 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     }
 
     // Get paths
-    const baseImagePath = `photos/${auth.currentUser.uid}/${origImageOrientation}`;
+    const baseImagePath = `photos/${OWNER_USER_ID}/${origImageOrientation}`;
     const originalPath = `${baseImagePath}/${photoRef}`;
     const thumbsPath = `${baseImagePath}/${IMG_THUMB_S}/${photoRef}_${IMG_SIZE_THUMB_S}`;
     const thumblPath = `${baseImagePath}/${IMG_THUMB_L}/${photoRef}_${IMG_SIZE_THUMB_L}`;
@@ -633,34 +634,36 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     >
                       Back to List
                     </button>
-                    <button
-                      type='button'
-                      className={`btn ${editing ? 'hidden' : ''}`}
-                      onClick={() => setEditing(true)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type='button'
-                      className={`btn ${editing ? '' : 'hidden'}`}
-                      onClick={onCancelClick}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type='button'
-                      className={`btn ${editing ? '' : 'hidden'}`}
-                      onClick={(e) => onSubmit(e)}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type='button'
-                      className='btn btn_cancel'
-                      onClick={(e) => onDelete(e)}
-                    >
-                      Delete
-                    </button>
+                    {auth.currentUser && <>
+                      <button
+                        type='button'
+                        className={`btn ${editing ? 'hidden' : ''}`}
+                        onClick={() => setEditing(true)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type='button'
+                        className={`btn ${editing ? '' : 'hidden'}`}
+                        onClick={onCancelClick}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type='button'
+                        className={`btn ${editing ? '' : 'hidden'}`}
+                        onClick={(e) => onSubmit(e)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type='button'
+                        className='btn btn_cancel'
+                        onClick={(e) => onDelete(e)}
+                      >
+                        Delete
+                      </button>
+                    </>}
                   </div>
                 </div>
               </div>

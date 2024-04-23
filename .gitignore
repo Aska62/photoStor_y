@@ -26,3 +26,5 @@ firebase.config.js
 .firebase/
 .firebaserc
 firebase.json
+
+src/constants.js
