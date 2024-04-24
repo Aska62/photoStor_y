@@ -21,6 +21,7 @@ const OAuth = () => {
 
       if (docSnap.exists()) {
         navigate('/');
+        toast.success(`Logged in as ${docSnap.data().userName}`);
       } else {
         // If user doesn't exist, error
         auth.signOut();

@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { getAuth } from 'firebase/auth';
 import { HOME_PAGE_URL, PHOTOS_PAGE_URL, CATEGORIES_PAGE_URL, PROFILE_PAGE_URL, LOGIN_PAGE_URL } from '../constants.js';
 import { IoLogOutOutline } from "react-icons/io5";
