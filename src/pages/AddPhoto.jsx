@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import moment from "moment";
 import { toast } from 'react-toastify';
 import Header from "../components/Header";
 import CategoryOption from "../components/CategoryOption";
@@ -29,8 +30,6 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const [loading, setLoading] = useState(false);
   const [photoToUpload, setPhotoToUpload] = useState(null);
   const [imagePreviewData, setImagePreviewData] = useState(null);
-  const [imageOrientation, setImageOrientation] = useState(IMG_LANDSCAPE);
-  const [hidePhoto, setHidePhoto] = useState(false);
   const [titleErr, setTitleErr] = useState('');
   const [dateErr, setDateErr] = useState('');
   const [locationErr, setLocationErr] = useState('');
@@ -39,18 +38,21 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const [imageErr, setImageErr] = useState('');
   const [formData, setFormData] = useState({
     title: '',
-    date: undefined,
+    date: null,
     location: '',
     categoryRef: '',
     note: '',
-    photoRef: ''
+    hide: false,
+    photoRef: '',
+    orientation: IMG_LANDSCAPE,
   });
   const {
     title,
     date,
     location,
-    categoryRef,
-    note
+    orientation,
+    note,
+    hide
   } = formData;
 
   const onFileSelect = (e) => {
@@ -73,12 +75,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   }
 
   const onInputChange = (e) => {
-    if (['title', 'location', 'note'].includes(e.target.id)) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [e.target.id]: e.target.value.trim(),
-      }));
-    } else if (e.target.id === "date") {
+    if (e.target.id === "date") {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.id]: Timestamp.fromMillis(Date.parse(e.target.value))
@@ -86,9 +83,13 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
     } else if (e.target.id === 'hide') {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: !hidePhoto,
+        [e.target.id]: !hide,
       }));
-      setHidePhoto(!hidePhoto);
+    } else if (e.target.name === 'orientation') {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }))
     } else {
       setFormData((prevState) => ({
         ...prevState,
@@ -100,6 +101,19 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Prepare complete data for update
+    const formDataCopy = {
+      title: formData.title.trim(),
+      location: formData.location.trim(),
+      date: formData.date,
+      categoryRef: formData.categoryRef,
+      note: formData.location.trim(),
+      orientation: formData.orientation,
+      hide: formData.hide,
+      userRef: auth.currentUser.uid,
+      createdAt: Timestamp.now(),
+    }
 
     // validation
     let hasError = false;
@@ -115,23 +129,23 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       setImageErr('Please choose a photo');
       hasError = true;
     }
-    if (title.length === 0) {
+    if (formDataCopy.title.length === 0) {
       setTitleErr('Please input title');
       hasError = true;
     }
-    if (!date) {
+    if (!formDataCopy.date) {
       setDateErr('Please choose date');
       hasError = true;
     }
-    if (location.length === 0) {
+    if (formDataCopy.location.length === 0) {
       setLocationErr('Please input location');
       hasError = true;
     }
-    if (categoryRef.length === 0) {
+    if (formDataCopy.categoryRef.length === 0) {
       setCategoryErr('Please choose category');
       hasError = true;
     }
-    if (note.length === 0) {
+    if (formDataCopy.note.length === 0) {
       setNoteErr('Please input note');
       hasError = true;
     }
@@ -141,17 +155,9 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       return;
     }
 
-    // Prepare complete data for update
-    const formDataCopy = {
-      ...formData,
-      orientation: imageOrientation,
-      userRef: auth.currentUser.uid,
-      createdAt: Timestamp.now(),
-    }
-
     // Create File reference
     const photoId = v4();
-    const baseImageUrl = `photos/${auth.currentUser.uid}/${imageOrientation}`;
+    const baseImageUrl = `photos/${auth.currentUser.uid}/${formDataCopy.orientation}`;
     const imageRef = ref(storage, `${baseImageUrl}/${photoId}`);
 
     // Upload photo to firebase storage
@@ -163,7 +169,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
 
         // Prepare for resized image URL check
         let lgSize;
-        switch(imageOrientation) {
+        switch(newDoc.orientation) {
           case IMG_PORTRAIT:
             lgSize = IMG_SIZE_PORTRAIT;
             break;
@@ -232,7 +238,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
             <div className="photo-form_main">
               <div className="photo-form_image-container">
                 <img
-                  className={`photo-for-view ${imageOrientation ? 'photo-preview_'+imageOrientation : ''}`}
+                  className={`photo-for-view photo-preview_${orientation}`}
                   src={imagePreviewData}
                   alt='preview'
                 />
@@ -253,8 +259,8 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                       name='orientation'
                       value={IMG_LANDSCAPE}
                       className="radio"
-                      checked={imageOrientation === IMG_LANDSCAPE}
-                      onChange={() => setImageOrientation(IMG_LANDSCAPE)}
+                      checked={orientation === IMG_LANDSCAPE}
+                      onChange={(e) => onInputChange(e)}
                     />
                     Landscape
                   </label>
@@ -264,8 +270,8 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                       name='orientation'
                       value={IMG_PORTRAIT}
                       className="radio"
-                      checked={imageOrientation === IMG_PORTRAIT}
-                      onChange={() =>  setImageOrientation(IMG_PORTRAIT)}
+                      checked={orientation === IMG_PORTRAIT}
+                      onChange={(e) => onInputChange(e)}
                     />
                     Portrait
                   </label>
@@ -275,8 +281,8 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                       name='orientation'
                       value={IMG_PANORAMA}
                       className="radio"
-                      checked={imageOrientation === IMG_PANORAMA}
-                      onChange={() => setImageOrientation(IMG_PANORAMA)}
+                      checked={orientation === IMG_PANORAMA}
+                      onChange={(e) => onInputChange(e)}
                     />
                     Panorama
                   </label>
@@ -286,8 +292,8 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                       name='orientation'
                       value={IMG_SQUARE}
                       className="radio"
-                      checked={imageOrientation === IMG_SQUARE}
-                      onChange={() => setImageOrientation(IMG_SQUARE)}
+                      checked={orientation === IMG_SQUARE}
+                      onChange={(e) => onInputChange(e)}
                     />
                     Square
                   </label>
@@ -302,6 +308,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     name='title'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
+                    value={title}
                   />
                   <p className="form-err form-err_photo">{titleErr ?? titleErr}</p>
                 </li>
@@ -313,6 +320,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     name='date'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
+                    value={date ? moment.unix(date.seconds).format("YYYY-MM-DD") : null}
                   />
                   <p className="form-err form-err_photo">{dateErr ?? dateErr}</p>
                 </li>
@@ -324,6 +332,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     name='location'
                     className="photo-input"
                     onChange={(e) => onInputChange(e)}
+                    value={location}
                   />
                   <p className="form-err form-err_photo">{locationErr ?? locationErr}</p>
                 </li>
@@ -346,6 +355,7 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     name='note'
                     className="photo-info_textarea"
                     onChange={(e) => onInputChange(e)}
+                    value={note}
                   />
                   <p className="form-err form-err_photo">{noteErr ?? noteErr}</p>
                 </li>
