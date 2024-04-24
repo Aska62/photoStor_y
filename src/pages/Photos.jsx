@@ -141,6 +141,7 @@ const Photos = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     src={info.photoURL}
                     alt={info.data.title}
                     className="photo-list_img"
+                    onContextMenu={(e)=> e.preventDefault()}
                   />
                 </Link>
                 <div className="link photo-list_info">

@@ -134,7 +134,7 @@ const Profile = ({ detectMobMenuOpen, isMobMenuOpen }) => {
       <Header detectMobMenuOpen={detectMobMenuOpen} />
       <main className={`main main_profile ${isMobMenuOpen ? 'main_frozen' : ''}`}>
         <h2 className="main-title main-title_top_profile">Profile</h2>
-        <div className="main-image main-image_profile">
+        <div className="main-image main-image_profile" onContextMenu={(e)=> e.preventDefault()}>
           <div className="main-image-cover main-image-cover_profile">
           </div>
           <form className="profile-container">

@@ -3,7 +3,7 @@ import OAuth from "../components/OAuth";
 
 const Login = ({ detectMobMenuOpen }) => {
   return (
-    <div className="main main_login">
+    <div className="main main_login" onContextMenu={(e)=> e.preventDefault()}>
       <Header detectMobMenuOpen={detectMobMenuOpen} isLoginPage={true} />
       <h2 className="main-title main-title_top_login">Photo<br className='title-br' />Story</h2>
       <div className="login-box">

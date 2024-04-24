@@ -467,6 +467,7 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
                     className={`photo-for-view photo-preview_${orientation}`}
                     src={imagePreviewData}
                     alt='preview'
+                    onContextMenu={(e)=> e.preventDefault()}
                   />
                   <div className={`image-edit-box ${editing ? '' : 'hidden' }`}>
                     <input
