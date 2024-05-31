@@ -104,15 +104,15 @@ const AddPhoto = ({ detectMobMenuOpen, isMobMenuOpen }) => {
 
     // Prepare complete data for update
     const formDataCopy = {
-      title: formData.title.trim(),
-      location: formData.location.trim(),
-      date: formData.date,
+      title      : formData.title.trim(),
+      location   : formData.location.trim(),
+      date       : formData.date,
       categoryRef: formData.categoryRef,
-      note: formData.location.trim(),
+      note       : formData.location.trim(),
       orientation: formData.orientation,
-      hide: formData.hide,
-      userRef: auth.currentUser.uid,
-      createdAt: Timestamp.now(),
+      hide       : formData.hide === undefined ? false : formData.hide,
+      userRef    : auth.currentUser.uid,
+      createdAt  : Timestamp.now(),
     }
 
     // validation

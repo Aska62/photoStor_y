@@ -133,6 +133,12 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
           setPhotoInfo(docSnap.data());
           setOrigImageOrientation(docSnap.data().orientation);
           setFormData({ ...docSnap.data()});
+          if (docSnap.hide === undefined) {
+            setFormData({
+              ...docSnap.data(),
+              hide: false
+            })
+          }
           setLoading(false);
         })
         .catch((err) => {
