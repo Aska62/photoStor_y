@@ -207,14 +207,14 @@ const Photo = ({ detectMobMenuOpen, isMobMenuOpen }) => {
 
     // Prepare data for update
     let formDataCopy = {
-      title: formData.title.trim(),
-      location: formData.location.trim(),
-      date: formData.date,
+      title      : formData.title.trim(),
+      location   : formData.location.trim(),
+      date       : formData.date,
       categoryRef: formData.categoryRef,
-      note: formData.location.trim(),
+      note       : formData.note.trim(),
       orientation: formData.orientation,
-      hide: formData.hide,
-      userRef: auth.currentUser.uid,
+      hide       : formData.hide,
+      userRef    : auth.currentUser.uid,
     }
 
     // validation
